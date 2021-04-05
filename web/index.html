@@ -40,6 +40,31 @@
       });
     }
   </script>
+  
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-analytics.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+      apiKey: "AIzaSyAIChbolG0U6VH5RhdPcA0HIwZ6ZfilFSU",
+      authDomain: "solar-warehouse-system.firebaseapp.com",
+      projectId: "solar-warehouse-system",
+      storageBucket: "solar-warehouse-system.appspot.com",
+      messagingSenderId: "12314489726",
+      appId: "1:12314489726:web:509a0d25af5ebd5a87f92f",
+      measurementId: "G-66H9WL74PM"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>
