@@ -14,4 +14,12 @@ class QuoteItem {
     this.rate,
     this.tax,
   });
+
+  factory QuoteItem.fromJson(Map<dynamic, dynamic> json) {
+    return QuoteItem(
+      quantity: json['quantity'] ?? 0,
+      rate: json['rate'] ?? 0.0,
+      tax: json['tax'] ?? 0.0,
+    );
+  }
 }
