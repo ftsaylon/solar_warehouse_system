@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:solar_warehouse_system/models/quote_item.dart';
 
 import 'customer.dart';
