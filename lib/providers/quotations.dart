@@ -4,8 +4,9 @@ import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/services/quotation_service.dart';
 
 class Quotations extends ChangeNotifier {
-  final quotationsService = GetIt.I<QuotationService>();
+  final _quotationsService = GetIt.I<QuotationService>();
 
-  Stream<List<Quotation>> get quotationsStream =>
-      quotationsService.fetchQuotations();
+  Stream<List<Quotation>> quotationsStream() {
+    return _quotationsService.fetchQuotations()..first;
+  }
 }

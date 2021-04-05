@@ -19,15 +19,13 @@ class Quotation {
     this.images,
   });
 
-  factory Quotation.fromJson(Map<dynamic, dynamic> json) {
-    return Quotation(
-      id: json['id'],
-      title: json['title'] ?? '',
-      customer: json['customer'] ?? '',
-      total: json['total'] ?? '',
-      images: json['images'] ?? [],
-    );
-  }
+  factory Quotation.fromJson(Map<dynamic, dynamic> json) => Quotation(
+        id: json['id'] ?? '',
+        title: json['title'] ?? '',
+        // customer: json['customer'] ?? '',
+        total: json['total']?.toDouble() ?? 0.0,
+        images: json['images'] ?? [],
+      );
 
   Quotation copyWith({
     String title,
@@ -35,13 +33,12 @@ class Quotation {
     double total,
     List<QuoteItem> quoteItems,
     List<String> images,
-  }) {
-    return Quotation(
-      title: title ?? this.title,
-      customer: customer ?? this.customer,
-      total: total ?? this.total,
-      quoteItems: quoteItems ?? this.quoteItems,
-      images: images ?? this.images,
-    );
-  }
+  }) =>
+      Quotation(
+        title: title ?? this.title,
+        customer: customer ?? this.customer,
+        total: total ?? this.total,
+        quoteItems: quoteItems ?? this.quoteItems,
+        images: images ?? this.images,
+      );
 }

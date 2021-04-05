@@ -5,14 +5,13 @@ class QuotationService {
   final _db = FirebaseFirestore.instance;
 
   Stream<List<Quotation>> fetchQuotations() {
-    return _db.collection('quotations').snapshots().map(
-          (snapshot) => (snapshot.docs.isNotEmpty)
-              ? {
-                  snapshot.docs
-                      .map((doc) => Quotation.fromJson(doc.data()))
-                      .toList()
-                }
-              : <Quotation>[],
-        );
+    return _db.collection('quotations').snapshots().map((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+            .map((doc) => Quotation.fromJson(doc.data()))
+            .toList();
+      }
+      return <Quotation>[];
+    });
   }
 }
