@@ -24,6 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  provider: ^5.0.0
+
   #Firebase
   firebase_core: "^0.7.0"
   # Newly reworked plugins covered by this migration guide:
