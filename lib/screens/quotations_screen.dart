@@ -8,30 +8,26 @@ class QuotationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Quotations'),
-      ),
-      body: Container(
-        child: StreamBuilder<List<Quotation>>(
-            stream: context.read<Quotations>().quotationsStream(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return (Center(child: CircularProgressIndicator()));
-              }
+    return Container(
+      child: StreamBuilder<List<Quotation>>(
+        stream: context.read<Quotations>().quotationsStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return (Center(child: CircularProgressIndicator()));
+          }
 
-              List<Quotation> quotations = snapshot.data;
+          List<Quotation> quotations = snapshot.data;
 
-              return ListView.builder(
-                itemCount: quotations.length,
-                itemBuilder: (context, index) {
-                  final quotation = quotations[index];
-                  return ListTile(
-                    title: Text(quotation.title),
-                  );
-                },
+          return ListView.builder(
+            itemCount: quotations.length,
+            itemBuilder: (context, index) {
+              final quotation = quotations[index];
+              return ListTile(
+                title: Text(quotation.title),
               );
-            }),
+            },
+          );
+        },
       ),
     );
   }
