@@ -1,9 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:solar_warehouse_system/screens/root_screen.dart';
-import 'package:solar_warehouse_system/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+/* ---------------------------- Flutter Packages ---------------------------- */
 
+import 'package:flutter/material.dart';
+
+/* --------------------------- 3rd-Party Packages --------------------------- */
+
+import 'package:provider/provider.dart';
+
+/* --------------------------------- Screens -------------------------------- */
+
+import 'screens/root_screen.dart';
+
+/* --------------------------------- Helpers -------------------------------- */
+
+import 'services.dart';
 import 'providers.dart';
 
 void main() async {
