@@ -22,7 +22,7 @@ class Quotation {
   factory Quotation.fromJson(Map<dynamic, dynamic> json) => Quotation(
         id: json['id'] ?? '',
         title: json['title'] ?? '',
-        // customer: json['customer'] ?? '',
+        customer: Customer.fromJson(json['customer'] ?? {}),
         total: json['total']?.toDouble() ?? 0.0,
         images: json['images'] ?? [],
       );
