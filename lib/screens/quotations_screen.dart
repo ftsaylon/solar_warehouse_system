@@ -54,7 +54,11 @@ class QuotationsScreen extends StatelessWidget {
             )
             .toList();
 
-        return CustomDataTable(columns: columns, rows: rows);
+        return CustomDataTable(
+          title: 'Quotations',
+          columns: columns,
+          rows: rows,
+        );
       },
     );
   }
