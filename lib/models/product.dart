@@ -28,9 +28,9 @@ class Product {
     final data = documentSnapshot.data();
     return Product(
       id: documentSnapshot.id,
-      name: data['name'],
-      cost: data['cost'],
-      price: data['price'],
+      name: data['name'] ?? 0.0,
+      cost: double.parse(data['cost'] ?? 0.0),
+      price: double.parse(data['price'] ?? 0.0),
       documentSnapshot: documentSnapshot,
     );
   }

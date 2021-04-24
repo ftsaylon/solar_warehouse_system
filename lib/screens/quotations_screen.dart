@@ -26,18 +26,18 @@ class _QuotationsScreenState extends State<QuotationsScreen> {
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
-      context
-          .read<Quotations>()
-          .fetchAndSetQuotations()
-          .then((_) => setState(() {
-                _isLoading = false;
-                _isInit = false;
-              }));
+
+      await context.read<Quotations>().fetchAndSetQuotations();
+
+      setState(() {
+        _isLoading = false;
+        _isInit = false;
+      });
     }
     super.didChangeDependencies();
   }
