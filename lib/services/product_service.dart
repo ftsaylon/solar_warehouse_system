@@ -7,9 +7,23 @@ class ProductService {
   Stream<List<Product>> streamProducts() {
     return _db.collection('products').snapshots().map((snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs
-            .map((doc) => Product.fromJson(doc.data()))
-            .toList();
+        return snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      }
+      return <Product>[];
+    });
+  }
+
+  Future<List<Product>> fetchProducts({
+    DocumentSnapshot documentSnapshot,
+  }) async {
+    var query = _db.collection('products').limit(10);
+
+    if (documentSnapshot != null)
+      query = query.startAfterDocument(documentSnapshot);
+
+    return query.get().then((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
       }
       return <Product>[];
     });

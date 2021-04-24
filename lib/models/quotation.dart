@@ -38,6 +38,7 @@ class Quotation {
       customer: Customer.fromJson(data['customer'] ?? {}),
       total: data['total']?.toDouble() ?? 0.0,
       images: data['images'] ?? [],
+      documentSnapshot: documentSnapshot,
     );
   }
 
