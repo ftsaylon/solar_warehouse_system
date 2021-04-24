@@ -7,6 +7,6 @@ class Products extends ChangeNotifier {
   final _productsService = GetIt.I<ProductService>();
 
   Stream<List<Product>> productsStream() {
-    return _productsService.fetchQuotations();
+    return _productsService.streamProducts();
   }
 }

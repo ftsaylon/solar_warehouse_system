@@ -14,8 +14,7 @@ class CustomDataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
       children: [
         if (title != null)
           Padding(
