@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:solar_warehouse_system/models/quote_item.dart';
 
 import 'customer.dart';
@@ -9,6 +10,7 @@ class Quotation {
   final double total;
   final List<QuoteItem> quoteItems;
   final List<String> images;
+  final DocumentSnapshot documentSnapshot;
 
   Quotation({
     this.id,
@@ -17,15 +19,28 @@ class Quotation {
     this.total,
     this.quoteItems,
     this.images,
+    this.documentSnapshot,
   });
 
   factory Quotation.fromJson(Map<dynamic, dynamic> json) => Quotation(
         id: json['id'] ?? '',
         title: json['title'] ?? '',
-        // customer: json['customer'] ?? '',
+        customer: Customer.fromJson(json['customer'] ?? {}),
         total: json['total']?.toDouble() ?? 0.0,
         images: json['images'] ?? [],
       );
+
+  factory Quotation.fromSnapshot(DocumentSnapshot documentSnapshot) {
+    final data = documentSnapshot.data();
+    return Quotation(
+      id: documentSnapshot.id,
+      title: data['title'] ?? '',
+      customer: Customer.fromJson(data['customer'] ?? {}),
+      total: data['total']?.toDouble() ?? 0.0,
+      images: data['images'] ?? [],
+      documentSnapshot: documentSnapshot,
+    );
+  }
 
   Quotation copyWith({
     String title,
@@ -40,5 +55,14 @@ class Quotation {
         total: total ?? this.total,
         quoteItems: quoteItems ?? this.quoteItems,
         images: images ?? this.images,
+      );
+
+  factory Quotation.initial() => Quotation(
+        id: null,
+        title: '',
+        customer: null,
+        total: 0.0,
+        quoteItems: [],
+        images: [],
       );
 }
