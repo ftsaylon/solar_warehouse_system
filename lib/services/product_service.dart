@@ -28,4 +28,10 @@ class ProductService {
       return <Product>[];
     });
   }
+
+  Future<DocumentSnapshot> addProduct(Product product) async {
+    final newProduct = _db.collection('products').doc();
+    await newProduct.set(product.toJson());
+    return newProduct.get();
+  }
 }

@@ -5,7 +5,7 @@ class Product {
   final String name;
   final double cost;
   final double price;
-  final DocumentSnapshot documentSnapshot;
+  DocumentSnapshot documentSnapshot;
 
   Product({
     this.id,
@@ -33,6 +33,14 @@ class Product {
       price: data['price'],
       documentSnapshot: documentSnapshot,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': this.name ?? '',
+      'cost': this.cost ?? 0.0,
+      'price': this.price ?? 0.0,
+    };
   }
 
   Product copyWith({

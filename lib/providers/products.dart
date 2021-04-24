@@ -24,4 +24,11 @@ class Products extends ChangeNotifier {
     _products.addAll(newQuotations);
     notifyListeners();
   }
+
+  Future<void> addProduct(Product product) async {
+    final newProductDoc = await _productsService.addProduct(product);
+    if (newProductDoc != null)
+      _products.add(product..documentSnapshot = newProductDoc);
+    notifyListeners();
+  }
 }
