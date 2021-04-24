@@ -6,23 +6,33 @@ class CustomDataTable extends StatelessWidget {
     @required this.columns,
     @required this.rows,
     this.title,
+    this.onCreateNew,
   }) : super(key: key);
 
   final List<DataColumn> columns;
   final List<DataRow> rows;
   final String title;
+  final Function onCreateNew;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
         if (title != null)
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headline6,
-            ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: onCreateNew,
+                child: Text('Create New'),
+              ),
+            ],
           ),
         SingleChildScrollView(
           child: SizedBox(

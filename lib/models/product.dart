@@ -5,7 +5,7 @@ class Product {
   final String name;
   final double cost;
   final double price;
-  DocumentSnapshot documentSnapshot;
+  final DocumentSnapshot documentSnapshot;
 
   Product({
     this.id,
@@ -28,9 +28,9 @@ class Product {
     final data = documentSnapshot.data();
     return Product(
       id: documentSnapshot.id,
-      name: data['name'] ?? 0.0,
-      cost: double.parse(data['cost'] ?? 0.0),
-      price: double.parse(data['price'] ?? 0.0),
+      name: data['name'] ?? '',
+      cost: (data['cost'] ?? 0).toDouble(),
+      price: (data['price'] ?? 0).toDouble(),
       documentSnapshot: documentSnapshot,
     );
   }
@@ -44,14 +44,18 @@ class Product {
   }
 
   Product copyWith({
+    String id,
     String name,
     double cost,
     double price,
+    DocumentSnapshot documentSnapshot,
   }) {
     return Product(
+      id: id ?? this.id,
       name: name ?? this.name,
       cost: cost ?? this.cost,
       price: price ?? this.price,
+      documentSnapshot: documentSnapshot ?? this.documentSnapshot,
     );
   }
 

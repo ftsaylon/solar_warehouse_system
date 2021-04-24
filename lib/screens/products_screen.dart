@@ -87,7 +87,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 Text(product.cost.toStringAsFixed(2)),
               ),
               DataCell(
-                Text(product.cost.toStringAsFixed(2)),
+                Text(product.price.toStringAsFixed(2)),
               ),
             ],
           ),
@@ -105,6 +105,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
               title: 'Products',
               columns: columns,
               rows: rows,
+              onCreateNew: () => context.read<Products>().addProduct(Product(
+                    name: 'New Product',
+                    cost: 100.0,
+                    price: 200.0,
+                  )),
             ),
           );
   }

@@ -16,7 +16,7 @@ class ProductService {
   Future<List<Product>> fetchProducts({
     DocumentSnapshot documentSnapshot,
   }) async {
-    var query = _db.collection('products').limit(10);
+    var query = _db.collection('products').orderBy('date_updated').limit(20);
 
     if (documentSnapshot != null)
       query = query.startAfterDocument(documentSnapshot);
@@ -31,7 +31,12 @@ class ProductService {
 
   Future<DocumentSnapshot> addProduct(Product product) async {
     final newProduct = _db.collection('products').doc();
-    await newProduct.set(product.toJson());
+    var requestBody = product.toJson();
+
+    requestBody['date_created'] = FieldValue.serverTimestamp();
+    requestBody['date_updated'] = FieldValue.serverTimestamp();
+
+    await newProduct.set(requestBody);
     return newProduct.get();
   }
 }

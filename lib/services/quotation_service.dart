@@ -16,7 +16,7 @@ class QuotationService {
   Future<List<Quotation>> fetchQuotations({
     DocumentSnapshot documentSnapshot,
   }) async {
-    var query = _db.collection('quotations').limit(10);
+    var query = _db.collection('quotations').limit(20);
 
     if (documentSnapshot != null)
       query = query.startAfterDocument(documentSnapshot);

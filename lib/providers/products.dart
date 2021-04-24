@@ -15,20 +15,25 @@ class Products extends ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final newQuotations = (_products.isEmpty)
+    final newProducts = (_products.isEmpty)
         ? await _productsService.fetchProducts()
         : await _productsService.fetchProducts(
             documentSnapshot: _products.last.documentSnapshot,
           );
 
-    _products.addAll(newQuotations);
+    _products.addAll(newProducts);
     notifyListeners();
   }
 
   Future<void> addProduct(Product product) async {
     final newProductDoc = await _productsService.addProduct(product);
-    if (newProductDoc != null)
-      _products.add(product..documentSnapshot = newProductDoc);
-    notifyListeners();
+    if (newProductDoc != null) {
+      product = product.copyWith(
+        id: newProductDoc.id,
+        documentSnapshot: newProductDoc,
+      );
+      _products.add(product);
+      notifyListeners();
+    }
   }
 }
