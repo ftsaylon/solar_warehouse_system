@@ -7,6 +7,6 @@ class Quotations extends ChangeNotifier {
   final _quotationsService = GetIt.I<QuotationService>();
 
   Stream<List<Quotation>> quotationsStream() {
-    return _quotationsService.fetchQuotations()..first;
+    return _quotationsService.fetchQuotations();
   }
 }

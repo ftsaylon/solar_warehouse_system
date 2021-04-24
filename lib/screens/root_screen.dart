@@ -1,6 +1,7 @@
 /* ---------------------------- Flutter Packages ---------------------------- */
 
 import 'package:flutter/material.dart';
+import 'package:solar_warehouse_system/screens/products_screen.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_app_bar.dart';
 
 /* --------------------------------- Screens -------------------------------- */
@@ -23,6 +24,7 @@ class _RootScreenState extends State<RootScreen> {
   List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
     QuotationsScreen(),
+    ProductsScreen(),
   ];
 
   int _selectedIndex;
@@ -79,6 +81,11 @@ class _RootScreenState extends State<RootScreen> {
           icon: Icon(Icons.assignment),
           selectedIcon: Icon(Icons.assignment),
           label: Text('Quotations'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.inventory),
+          selectedIcon: Icon(Icons.inventory),
+          label: Text('Products'),
         ),
       ],
     );

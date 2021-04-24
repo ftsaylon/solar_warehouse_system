@@ -31,4 +31,11 @@ class Product {
       price: price ?? this.price,
     );
   }
+
+  factory Product.initial() => Product(
+        id: null,
+        name: '',
+        cost: 0.0,
+        price: 0.0,
+      );
 }

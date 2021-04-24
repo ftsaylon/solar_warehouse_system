@@ -41,4 +41,13 @@ class Quotation {
         quoteItems: quoteItems ?? this.quoteItems,
         images: images ?? this.images,
       );
+
+  factory Quotation.initial() => Quotation(
+        id: null,
+        title: '',
+        customer: null,
+        total: 0.0,
+        quoteItems: [],
+        images: [],
+      );
 }
