@@ -34,6 +34,7 @@ class App extends StatelessWidget {
           primarySwatch: Colors.deepPurple,
         ),
         home: RootScreen(),
+        routes: {},
       ),
     );
   }

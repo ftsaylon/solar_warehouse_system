@@ -32,7 +32,7 @@ class Products extends ChangeNotifier {
         id: newProductDoc.id,
         documentSnapshot: newProductDoc,
       );
-      _products.add(product);
+      _products.insert(0, product);
       notifyListeners();
     }
   }

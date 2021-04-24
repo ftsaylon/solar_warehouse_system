@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:solar_warehouse_system/models/product.dart';
+import 'package:solar_warehouse_system/providers/products.dart';
+import 'package:provider/provider.dart';
+import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
 
 class ProductForm extends StatefulWidget {
   final Product product;
 
-  static const routeName = '/edit-quotation';
+  static const routeName = '/edit-product';
 
   const ProductForm({
     this.product,
@@ -25,8 +28,8 @@ class _ProductFormState extends State<ProductForm> {
 
   var _initValues = {
     'name': '',
-    'cost': 0.0,
-    'price': 0.0,
+    'cost': '',
+    'price': '',
   };
 
   @override
@@ -35,8 +38,8 @@ class _ProductFormState extends State<ProductForm> {
       _editedProduct = widget.product;
       _initValues = {
         'name': _editedProduct.name,
-        'cost': _editedProduct.cost,
-        'price': _editedProduct.price,
+        'cost': _editedProduct.cost.toString(),
+        'price': _editedProduct.price.toString(),
       };
     }
     super.initState();
@@ -50,95 +53,95 @@ class _ProductFormState extends State<ProductForm> {
     super.dispose();
   }
 
-  Future<void> _saveForm() async {
+  Future<void> _saveForm(BuildContext context) async {
     final isValid = _formKey.currentState.validate();
 
-    if (isValid) return;
+    if (!isValid) return;
 
     _formKey.currentState.save();
 
-    // TODO: Implement save
+    await context.read<Products>().addProduct(_editedProduct);
+
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            TextFormField(
-              initialValue: _initValues['name'],
-              decoration: InputDecoration(labelText: 'name'),
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_costFocusNode);
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please provide a value.';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _editedProduct = _editedProduct.copyWith(name: value);
-              },
-            ),
-            TextFormField(
-              initialValue: _initValues['cost'],
-              decoration: InputDecoration(labelText: 'Cost'),
-              textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.number,
-              focusNode: _costFocusNode,
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_priceFocusNode);
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a price.';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number.';
-                }
-                if (double.parse(value) <= 0) {
-                  return 'Please enter a number greater than zero.';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _editedProduct = _editedProduct.copyWith(
-                  cost: double.parse(value),
-                );
-              },
-            ),
-            TextFormField(
-              initialValue: _initValues['price'],
-              decoration: InputDecoration(labelText: 'Price'),
-              textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.number,
-              focusNode: _priceFocusNode,
-              onFieldSubmitted: (_) {},
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a price.';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number.';
-                }
-                if (double.parse(value) <= 0) {
-                  return 'Please enter a number greater than zero.';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _editedProduct = _editedProduct.copyWith(
-                  price: double.parse(value),
-                );
-              },
-            ),
-          ],
+    return CustomFormDialog(
+      formKey: _formKey,
+      title: 'New Product',
+      saveForm: () => _saveForm(context),
+      formFields: [
+        TextFormField(
+          initialValue: _initValues['name'],
+          decoration: InputDecoration(labelText: 'Product Name'),
+          textInputAction: TextInputAction.next,
+          onFieldSubmitted: (_) {
+            FocusScope.of(context).requestFocus(_costFocusNode);
+          },
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please provide a value.';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _editedProduct = _editedProduct.copyWith(name: value);
+          },
         ),
-      ),
+        TextFormField(
+          initialValue: _initValues['cost'].toString(),
+          decoration: InputDecoration(labelText: 'Cost'),
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          focusNode: _costFocusNode,
+          onFieldSubmitted: (_) {
+            FocusScope.of(context).requestFocus(_priceFocusNode);
+          },
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please enter a price.';
+            }
+            if (double.tryParse(value) == null) {
+              return 'Please enter a valid number.';
+            }
+            if (double.parse(value) <= 0) {
+              return 'Please enter a number greater than zero.';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _editedProduct = _editedProduct.copyWith(
+              cost: double.parse(value),
+            );
+          },
+        ),
+        TextFormField(
+          initialValue: _initValues['price'].toString(),
+          decoration: InputDecoration(labelText: 'Price'),
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          focusNode: _priceFocusNode,
+          onFieldSubmitted: (_) {},
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please enter a price.';
+            }
+            if (double.tryParse(value) == null) {
+              return 'Please enter a valid number.';
+            }
+            if (double.parse(value) <= 0) {
+              return 'Please enter a number greater than zero.';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            _editedProduct = _editedProduct.copyWith(
+              price: double.parse(value),
+            );
+          },
+        ),
+      ],
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:solar_warehouse_system/models/product.dart';
 import 'package:solar_warehouse_system/providers/products.dart';
+import 'package:solar_warehouse_system/widgets/features/products/product_form.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_data_table.dart';
 
 import 'package:provider/provider.dart';
@@ -105,11 +106,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
               title: 'Products',
               columns: columns,
               rows: rows,
-              onCreateNew: () => context.read<Products>().addProduct(Product(
-                    name: 'New Product',
-                    cost: 100.0,
-                    price: 200.0,
-                  )),
+              onCreateNew: () => showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => ProductForm(),
+              ),
             ),
           );
   }

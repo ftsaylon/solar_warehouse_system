@@ -16,7 +16,13 @@ class ProductService {
   Future<List<Product>> fetchProducts({
     DocumentSnapshot documentSnapshot,
   }) async {
-    var query = _db.collection('products').orderBy('date_updated').limit(20);
+    var query = _db
+        .collection('products')
+        .orderBy(
+          'date_updated',
+          descending: true,
+        )
+        .limit(20);
 
     if (documentSnapshot != null)
       query = query.startAfterDocument(documentSnapshot);
