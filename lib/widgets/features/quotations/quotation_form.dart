@@ -41,13 +41,9 @@ class _QuotationFormState extends State<QuotationForm> {
 
   Future<void> _saveForm(BuildContext context) async {
     final isValid = _formKey.currentState.validate();
-
     if (!isValid) return;
-
     _formKey.currentState.save();
-
     await context.read<Quotations>().addQuotation(_editedQuotation);
-
     Navigator.of(context).pop();
   }
 

@@ -4,6 +4,7 @@ import 'package:solar_warehouse_system/models/customer.dart';
 import 'package:solar_warehouse_system/providers/customers.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_data_table.dart';
+import 'package:solar_warehouse_system/widgets/features/customers/customer_form.dart';
 
 class CustomersScreen extends StatefulWidget {
   CustomersScreen({Key key}) : super(key: key);
@@ -113,6 +114,11 @@ class _CustomersScreenState extends State<CustomersScreen> {
               title: 'Customers',
               columns: columns,
               rows: rows,
+              onCreateNew: () => showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => CustomerForm(),
+              ),
             ),
           );
   }

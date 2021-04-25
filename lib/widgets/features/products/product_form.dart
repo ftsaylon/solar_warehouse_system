@@ -55,13 +55,9 @@ class _ProductFormState extends State<ProductForm> {
 
   Future<void> _saveForm(BuildContext context) async {
     final isValid = _formKey.currentState.validate();
-
     if (!isValid) return;
-
     _formKey.currentState.save();
-
     await context.read<Products>().addProduct(_editedProduct);
-
     Navigator.of(context).pop();
   }
 
