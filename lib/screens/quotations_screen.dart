@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_data_table.dart';
+import 'package:solar_warehouse_system/widgets/features/quotations/quotation_form.dart';
 
 class QuotationsScreen extends StatefulWidget {
   const QuotationsScreen({Key key}) : super(key: key);
@@ -46,8 +47,12 @@ class _QuotationsScreenState extends State<QuotationsScreen> {
     setState(() {
       _isLoadingMore = true;
     });
+
     await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
     await context.read<Quotations>().fetchAndSetQuotations();
+
     setState(() {
       _isLoadingMore = false;
     });
@@ -104,6 +109,11 @@ class _QuotationsScreenState extends State<QuotationsScreen> {
               title: 'Quotations',
               columns: columns,
               rows: rows,
+              onCreateNew: () => showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => QuotationForm(),
+              ),
             ),
           );
   }

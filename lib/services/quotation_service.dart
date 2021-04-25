@@ -28,4 +28,15 @@ class QuotationService {
       return <Quotation>[];
     });
   }
+
+  Future<DocumentSnapshot> addQuotation(Quotation quotation) async {
+    final newQuotation = _db.collection('quotations').doc();
+    var requestBody = quotation.toJson();
+
+    requestBody['date_created'] = FieldValue.serverTimestamp();
+    requestBody['date_updated'] = FieldValue.serverTimestamp();
+
+    await newQuotation.set(requestBody);
+    return newQuotation.get();
+  }
 }

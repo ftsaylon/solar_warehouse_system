@@ -24,4 +24,16 @@ class Quotations extends ChangeNotifier {
     _quotations.addAll(newQuotations);
     notifyListeners();
   }
+
+  Future<void> addQuotation(Quotation quotation) async {
+    final newQuotationDoc = await _quotationsService.addQuotation(quotation);
+    if (newQuotationDoc != null) {
+      quotation = quotation.copyWith(
+        id: newQuotationDoc.id,
+        documentSnapshot: newQuotationDoc,
+      );
+      _quotations.insert(0, quotation);
+      notifyListeners();
+    }
+  }
 }

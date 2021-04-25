@@ -48,8 +48,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
     setState(() {
       _isLoadingMore = true;
     });
+
     await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
     await context.read<Products>().fetchAndSetProducts();
+
     setState(() {
       _isLoadingMore = false;
     });

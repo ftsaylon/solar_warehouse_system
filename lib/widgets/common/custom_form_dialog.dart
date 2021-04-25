@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class CustomFormDialog extends StatefulWidget {
   final String title;
-  final List<Widget> formFields;
+  final List<Widget> children;
   final Function saveForm;
   final GlobalKey<FormState> formKey;
 
   const CustomFormDialog({
     this.title,
-    this.formFields,
+    this.children,
     this.saveForm,
     this.formKey,
     Key key,
@@ -52,7 +52,7 @@ class _CustomFormDialogState extends State<CustomFormDialog> {
                   )
                 ]
               : [
-                  ...widget.formFields,
+                  ...widget.children,
                   _buildActionButtons(context),
                 ],
         ),

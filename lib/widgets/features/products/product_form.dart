@@ -71,7 +71,7 @@ class _ProductFormState extends State<ProductForm> {
       formKey: _formKey,
       title: 'New Product',
       saveForm: () => _saveForm(context),
-      formFields: [
+      children: [
         TextFormField(
           initialValue: _initValues['name'],
           decoration: InputDecoration(labelText: 'Product Name'),
