@@ -34,16 +34,14 @@ class CustomDataTable extends StatelessWidget {
               ),
             ],
           ),
-        SingleChildScrollView(
-          child: SizedBox(
-            width: double.infinity,
-            child: DataTable(
-              headingTextStyle: Theme.of(context).textTheme.subtitle1,
-              headingRowColor: MaterialStateProperty.all(
-                  Theme.of(context).primaryColor.withOpacity(0.08)),
-              columns: columns,
-              rows: rows,
-            ),
+        SizedBox(
+          width: double.infinity,
+          child: DataTable(
+            headingTextStyle: Theme.of(context).textTheme.subtitle1,
+            headingRowColor: MaterialStateProperty.all(
+                Theme.of(context).primaryColor.withOpacity(0.08)),
+            columns: columns,
+            rows: rows,
           ),
         ),
       ],
