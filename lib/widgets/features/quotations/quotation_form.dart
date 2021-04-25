@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:solar_warehouse_system/models/customer.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
+import 'package:solar_warehouse_system/providers/customers.dart';
 import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
@@ -68,7 +70,26 @@ class _QuotationFormState extends State<QuotationForm> {
             _editedQuotation = _editedQuotation.copyWith(title: value);
           },
         ),
+        _buildSelectCustomer(context),
       ],
+    );
+  }
+
+  Widget _buildSelectCustomer(BuildContext context) {
+    final customers = context.watch<Customers>().customers;
+    return DropdownButtonFormField(
+      items: customers
+          .map<DropdownMenuItem>(
+            (customer) => DropdownMenuItem<Customer>(
+              value: customer,
+              child: Text(customer.name),
+            ),
+          )
+          .toList(),
+      onChanged: (value) {
+        _editedQuotation = _editedQuotation.copyWith(customer: value);
+      },
+      decoration: InputDecoration(labelText: 'Select Customer'),
     );
   }
 }
