@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:solar_warehouse_system/models/product.dart';
-import 'package:solar_warehouse_system/providers/products.dart';
-import 'package:solar_warehouse_system/widgets/features/products/product_form.dart';
-import 'package:solar_warehouse_system/widgets/common/custom_data_table.dart';
+import 'package:solar_warehouse_system/models/customer.dart';
+import 'package:solar_warehouse_system/providers/customers.dart';
 import 'package:provider/provider.dart';
+import 'package:solar_warehouse_system/widgets/common/custom_data_table.dart';
 
-class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({Key key}) : super(key: key);
+class CustomersScreen extends StatefulWidget {
+  CustomersScreen({Key key}) : super(key: key);
 
   @override
-  _ProductsScreenState createState() => _ProductsScreenState();
+  _CustomersScreenState createState() => _CustomersScreenState();
 }
 
-class _ProductsScreenState extends State<ProductsScreen> {
+class _CustomersScreenState extends State<CustomersScreen> {
   bool _isInit;
   bool _isLoading;
   bool _isLoadingMore;
@@ -33,7 +32,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         _isLoading = true;
       });
 
-      await context.read<Products>().fetchAndSetProducts();
+      await context.read<Customers>().fetchAndSetCustomers();
 
       setState(() {
         _isLoading = false;
@@ -51,7 +50,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
-    await context.read<Products>().fetchAndSetProducts();
+    await context.read<Customers>().fetchAndSetCustomers();
 
     setState(() {
       _isLoadingMore = false;
@@ -60,8 +59,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> products = context.watch<Products>().products;
-
+    List<Customer> customers = context.watch<Customers>().customers;
     final columns = [
       DataColumn(
         label: Text('ID'),
@@ -70,28 +68,34 @@ class _ProductsScreenState extends State<ProductsScreen> {
         label: Text('Name'),
       ),
       DataColumn(
-        label: Text('Cost'),
+        label: Text('Email Address'),
       ),
       DataColumn(
-        label: Text('Price'),
+        label: Text('Contact Number'),
+      ),
+      DataColumn(
+        label: Text('Address'),
       ),
     ];
 
-    final rows = products
+    final rows = customers
         .map(
-          (product) => DataRow(
+          (customer) => DataRow(
             cells: [
               DataCell(
-                Text(product.id),
+                Text(customer.id),
               ),
               DataCell(
-                Text(product.name),
+                Text(customer.name),
               ),
               DataCell(
-                Text(product.cost.toStringAsFixed(2)),
+                Text(customer.emailAddress),
               ),
               DataCell(
-                Text(product.price.toStringAsFixed(2)),
+                Text(customer.contactNumber),
+              ),
+              DataCell(
+                Text(customer.address),
               ),
             ],
           ),
@@ -106,14 +110,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
             isLoading: _isLoadingMore,
             onEndOfPage: _loadMore,
             child: CustomDataTable(
-              title: 'Products',
+              title: 'Customers',
               columns: columns,
               rows: rows,
-              onCreateNew: () => showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (context) => ProductForm(),
-              ),
             ),
           );
   }

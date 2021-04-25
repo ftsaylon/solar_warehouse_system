@@ -56,6 +56,7 @@ class Quotation {
 
     return {
       'title': this.title ?? '',
+      'customer_id': this.customer.id ?? '',
       'customer': customer ?? Customer.initial().toJson(),
       'total': this.total ?? 0.0,
       'quote_items': quoteItems ?? [],

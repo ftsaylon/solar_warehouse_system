@@ -55,6 +55,7 @@ class Customer {
   }
 
   Customer copyWith({
+    String id,
     String name,
     String emailAddress,
     String contactNumber,
@@ -62,6 +63,7 @@ class Customer {
     DocumentSnapshot documentSnapshot,
   }) {
     return Customer(
+      id: id ?? this.id,
       name: name ?? this.name,
       emailAddress: emailAddress ?? this.emailAddress,
       contactNumber: contactNumber ?? this.contactNumber,

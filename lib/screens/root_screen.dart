@@ -1,6 +1,7 @@
 /* ---------------------------- Flutter Packages ---------------------------- */
 
 import 'package:flutter/material.dart';
+import 'package:solar_warehouse_system/screens/customers_screen.dart';
 import 'package:solar_warehouse_system/screens/products_screen.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_app_bar.dart';
 
@@ -23,8 +24,9 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
-    QuotationsScreen(),
+    CustomersScreen(),
     ProductsScreen(),
+    QuotationsScreen(),
   ];
 
   int _selectedIndex;
@@ -78,14 +80,19 @@ class _RootScreenState extends State<RootScreen> {
           label: Text('Dashboard'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.assignment),
-          selectedIcon: Icon(Icons.assignment),
-          label: Text('Quotations'),
+          icon: Icon(Icons.contacts),
+          selectedIcon: Icon(Icons.contacts),
+          label: Text('Customers'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.inventory),
           selectedIcon: Icon(Icons.inventory),
           label: Text('Products'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.assignment),
+          selectedIcon: Icon(Icons.assignment),
+          label: Text('Quotations'),
         ),
       ],
     );
