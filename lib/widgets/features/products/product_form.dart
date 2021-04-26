@@ -96,7 +96,7 @@ class _ProductFormState extends State<ProductForm> {
           },
           validator: (value) {
             if (value.isEmpty) {
-              return 'Please enter a price.';
+              return 'Please enter a cost.';
             }
             if (double.tryParse(value) == null) {
               return 'Please enter a valid number.';

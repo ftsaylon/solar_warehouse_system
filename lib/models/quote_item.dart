@@ -27,6 +27,15 @@ class QuoteItem {
     );
   }
 
+  factory QuoteItem.initial() => QuoteItem(
+        id: null,
+        name: '',
+        quantity: 0,
+        rate: 0.0,
+        tax: 0.0,
+        productReference: null,
+      );
+
   Map<String, dynamic> toJson() {
     return {
       'name': this.name ?? '',
@@ -36,4 +45,21 @@ class QuoteItem {
       'product_reference': this.productReference,
     };
   }
+
+  QuoteItem copyWith({
+    String id,
+    String name,
+    int quantity,
+    double rate,
+    double tax,
+    DocumentReference productReference,
+  }) =>
+      QuoteItem(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        quantity: quantity ?? this.quantity,
+        rate: rate ?? this.rate,
+        tax: tax ?? this.tax,
+        productReference: productReference ?? this.productReference,
+      );
 }
