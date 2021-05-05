@@ -4,6 +4,7 @@ import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/providers/customers.dart';
 import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:provider/provider.dart';
+import 'package:solar_warehouse_system/providers/quote_items.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
 import 'package:solar_warehouse_system/widgets/features/quotations/quote_item_form.dart';
 
@@ -27,12 +28,14 @@ class _QuotationFormState extends State<QuotationForm> {
     'title': '',
   };
 
+  bool get isEditing => widget.quotation != null;
+
   @override
   void initState() {
     _isInit = true;
     _isLoading = false;
 
-    if (widget.quotation != null) {
+    if (isEditing) {
       _editedQuotation = widget.quotation;
       _initValues = {
         'title': _editedQuotation.title,
@@ -49,6 +52,12 @@ class _QuotationFormState extends State<QuotationForm> {
       });
 
       await context.read<Customers>().fetchAndSetCustomers();
+
+      if (isEditing) {
+        context
+            .read<QuoteItems>()
+            .fetchAndSetQuoteItems(_editedQuotation.quoteItems);
+      }
 
       setState(() {
         _isLoading = false;
@@ -68,7 +77,13 @@ class _QuotationFormState extends State<QuotationForm> {
     final isValid = _formKey.currentState.validate();
     if (!isValid) return;
     _formKey.currentState.save();
+    final quoteItemsProvider = context.read<QuoteItems>();
+    _editedQuotation = _editedQuotation.copyWith(
+      quoteItems: quoteItemsProvider.quoteItems,
+      total: quoteItemsProvider.total,
+    );
     await context.read<Quotations>().addQuotation(_editedQuotation);
+    quoteItemsProvider.clear();
     Navigator.of(context).pop();
   }
 
@@ -85,7 +100,7 @@ class _QuotationFormState extends State<QuotationForm> {
             children: [
               TextFormField(
                 initialValue: _initValues['title'],
-                decoration: InputDecoration(labelText: 'Product Title'),
+                decoration: InputDecoration(labelText: 'Quotation Title'),
                 textInputAction: TextInputAction.next,
                 validator: (value) {
                   if (value.isEmpty) {
@@ -98,6 +113,7 @@ class _QuotationFormState extends State<QuotationForm> {
                 },
               ),
               _buildSelectCustomer(context),
+              _buildQuoteItems(context),
             ],
           );
   }
@@ -121,18 +137,69 @@ class _QuotationFormState extends State<QuotationForm> {
   }
 
   Widget _buildQuoteItems(BuildContext context) {
+    final quoteItems = context.watch<QuoteItems>().quoteItems;
+    final columns = [
+      DataColumn(
+        label: Text('Name'),
+      ),
+      DataColumn(
+        label: Text('Quantity'),
+      ),
+      DataColumn(
+        label: Text('Rate'),
+      ),
+      DataColumn(
+        label: Text('Tax'),
+      ),
+      DataColumn(
+        label: Text('SubTotal'),
+      ),
+    ];
+    final rows = quoteItems.values
+        .map((quoteItem) => DataRow(cells: [
+              DataCell(
+                Text(quoteItem.name),
+              ),
+              DataCell(
+                Text(quoteItem.quantity.toString()),
+              ),
+              DataCell(
+                Text(quoteItem.rate.toStringAsFixed(2)),
+              ),
+              DataCell(
+                Text(quoteItem.tax.toStringAsFixed(2)),
+              ),
+              DataCell(
+                Text(quoteItem.subTotal.toStringAsFixed(2)),
+              ),
+            ]))
+        .toList();
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ..._editedQuotation.quoteItems
-            .map((item) => ListTile(title: Text(item.name)))
-            .toList(),
-        ElevatedButton(
-          onPressed: () => showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => QuoteItemForm(),
-          ),
-          child: Text('Add Item'),
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text('Quote Items'),
+            ),
+            ElevatedButton(
+              onPressed: () => showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => QuoteItemForm(),
+              ),
+              child: Text('Add Item'),
+            ),
+          ],
+        ),
+        DataTable(
+          headingTextStyle: Theme.of(context).textTheme.subtitle1,
+          headingRowColor: MaterialStateProperty.all(
+              Theme.of(context).primaryColor.withOpacity(0.08)),
+          columns: columns,
+          rows: rows,
         ),
       ],
     );

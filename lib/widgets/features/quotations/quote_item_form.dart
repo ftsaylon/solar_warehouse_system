@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:solar_warehouse_system/models/product.dart';
 import 'package:solar_warehouse_system/models/quote_item.dart';
 import 'package:solar_warehouse_system/providers/products.dart';
+import 'package:solar_warehouse_system/providers/quote_items.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,7 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
   var _initValues = {
     'quantity': '',
     'rate': '',
-    'tax': '',
+    'tax': '12',
   };
 
   @override
@@ -76,7 +77,7 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
     final isValid = _formKey.currentState.validate();
     if (!isValid) return;
     _formKey.currentState.save();
-    // TODO: Insert saving here
+    context.read<QuoteItems>().addQuoteItem(_editedQuoteItem);
     Navigator.of(context).pop();
   }
 
@@ -84,6 +85,8 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
   Widget build(BuildContext context) {
     return CustomFormDialog(
       formKey: _formKey,
+      title: 'New Quote Item',
+      saveForm: () => _saveForm(context),
       children: [
         TextFormField(
           initialValue: _initValues['quantity'],

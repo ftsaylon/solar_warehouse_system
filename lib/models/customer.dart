@@ -35,6 +35,7 @@ class Customer {
       emailAddress: data['emailAddress'] ?? '',
       contactNumber: data['contactNumber'] ?? '',
       address: data['address'] ?? '',
+      documentSnapshot: documentSnapshot,
     );
   }
 
@@ -51,6 +52,7 @@ class Customer {
       'emailAddress': this.emailAddress ?? '',
       'contactNumber': this.contactNumber ?? '',
       'address': this.address ?? '',
+      'reference': this.documentSnapshot?.reference ?? '',
     };
   }
 

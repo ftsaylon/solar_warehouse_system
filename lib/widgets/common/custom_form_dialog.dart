@@ -43,18 +43,20 @@ class _CustomFormDialogState extends State<CustomFormDialog> {
       title: Text(widget.title),
       content: Form(
         key: widget.formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: (_isLoading)
-              ? [
-                  Center(
-                    child: CircularProgressIndicator(),
-                  )
-                ]
-              : [
-                  ...widget.children,
-                  _buildActionButtons(context),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: (_isLoading)
+                ? [
+                    Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  ]
+                : [
+                    ...widget.children,
+                    _buildActionButtons(context),
+                  ],
+          ),
         ),
       ),
     );

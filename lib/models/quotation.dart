@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:solar_warehouse_system/models/quote_item.dart';
 
 import 'customer.dart';
 
-class Quotation {
+class Quotation extends ChangeNotifier {
   final String id;
   final String title;
   final Customer customer;
   final double total;
-  final List<QuoteItem> quoteItems;
+  final Map<String, QuoteItem> quoteItems;
   final List<String> images;
   final DocumentSnapshot documentSnapshot;
 
@@ -32,34 +33,30 @@ class Quotation {
 
   factory Quotation.fromSnapshot(DocumentSnapshot documentSnapshot) {
     final data = documentSnapshot.data();
-    final quoteItems =
-        (data['quote_items'] != null && data['quote_items'].isNotEmpty)
-            ? (data['quote_items']).map((e) => QuoteItem.fromJson(e)).toList()
-            : <QuoteItem>[];
+    final quoteItems = (data['quote_items'] as Map<String, dynamic>)
+            ?.map((key, value) => MapEntry(key, QuoteItem.fromJson(value))) ??
+        {};
     return Quotation(
       id: documentSnapshot.id,
       title: data['title'] ?? '',
       customer: Customer.fromJson(data['customer'] ?? {}),
       total: data['total']?.toDouble() ?? 0.0,
-      quoteItems: quoteItems ?? <QuoteItem>[],
+      quoteItems: quoteItems,
       images: data['images']?.cast<String>() ?? <String>[],
       documentSnapshot: documentSnapshot,
     );
   }
 
   Map<String, dynamic> toJson() {
-    final customer = this.customer?.toJson()?.putIfAbsent(
-        'reference', () => this.customer?.documentSnapshot?.reference);
-
     final quoteItems =
-        this.quoteItems?.map((quoteItem) => quoteItem.toJson())?.toList();
+        this.quoteItems.map((key, value) => MapEntry(value.id, value.toJson()));
 
     return {
       'title': this.title ?? '',
       'customer_id': this.customer.id ?? '',
-      'customer': customer ?? Customer.initial().toJson(),
+      'customer': this.customer.toJson() ?? Customer.initial().toJson(),
       'total': this.total ?? 0.0,
-      'quote_items': quoteItems ?? [],
+      'quote_items': quoteItems ?? {},
       'images': this.images ?? [],
     };
   }
@@ -69,7 +66,7 @@ class Quotation {
     String title,
     Customer customer,
     double total,
-    List<QuoteItem> quoteItems,
+    Map<String, QuoteItem> quoteItems,
     List<String> images,
     DocumentSnapshot documentSnapshot,
   }) =>
@@ -88,7 +85,7 @@ class Quotation {
         title: '',
         customer: null,
         total: 0.0,
-        quoteItems: [],
+        quoteItems: {},
         images: [],
       );
 }

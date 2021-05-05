@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class QuoteItem {
   final String id;
@@ -28,7 +29,7 @@ class QuoteItem {
   }
 
   factory QuoteItem.initial() => QuoteItem(
-        id: null,
+        id: Uuid().v1(),
         name: '',
         quantity: 0,
         rate: 0.0,
@@ -62,4 +63,7 @@ class QuoteItem {
         tax: tax ?? this.tax,
         productReference: productReference ?? this.productReference,
       );
+
+  double get subTotal =>
+      (this.quantity * this.rate) + ((this.quantity * this.rate) * this.tax);
 }
