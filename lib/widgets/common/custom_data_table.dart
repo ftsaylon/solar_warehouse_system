@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomDataTable extends StatelessWidget {
+class CustomDataTable extends StatefulWidget {
   const CustomDataTable({
     Key key,
     @required this.columns,
@@ -15,36 +15,66 @@ class CustomDataTable extends StatelessWidget {
   final Function onCreateNew;
 
   @override
+  _CustomDataTableState createState() => _CustomDataTableState();
+}
+
+class _CustomDataTableState extends State<CustomDataTable> {
+  final _tableScrollController = ScrollController();
+  final _screenScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _tableScrollController.dispose();
+    _screenScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        if (title != null)
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.headline6,
+    return LayoutBuilder(
+      builder: (context, constraints) => Scrollbar(
+        isAlwaysShown: true,
+        controller: _screenScrollController,
+        child: ListView(
+          controller: _screenScrollController,
+          children: [
+            if (widget.title != null)
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: widget.onCreateNew,
+                    child: Text('Create New'),
+                  ),
+                ],
+              ),
+            Scrollbar(
+              isAlwaysShown: true,
+              controller: _tableScrollController,
+              child: SingleChildScrollView(
+                controller: _tableScrollController,
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.minWidth),
+                  child: DataTable(
+                    headingTextStyle: Theme.of(context).textTheme.subtitle1,
+                    headingRowColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor.withOpacity(0.08)),
+                    columns: widget.columns,
+                    rows: widget.rows,
+                  ),
                 ),
               ),
-              ElevatedButton(
-                onPressed: onCreateNew,
-                child: Text('Create New'),
-              ),
-            ],
-          ),
-        SizedBox(
-          width: double.infinity,
-          child: DataTable(
-            headingTextStyle: Theme.of(context).textTheme.subtitle1,
-            headingRowColor: MaterialStateProperty.all(
-                Theme.of(context).primaryColor.withOpacity(0.08)),
-            columns: columns,
-            rows: rows,
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
