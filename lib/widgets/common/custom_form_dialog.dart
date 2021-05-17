@@ -74,9 +74,7 @@ class _CustomFormDialogState extends State<CustomFormDialog> {
             ),
           ),
         ),
-        SizedBox(
-          width: 12,
-        ),
+        SizedBox(width: 12),
         Expanded(
           child: Container(
             padding: const EdgeInsets.only(top: 16.0),

@@ -7,15 +7,15 @@ class QuoteItems extends ChangeNotifier {
   Map<String, QuoteItem> get quoteItems => {..._quoteItems};
 
   void addQuoteItem(QuoteItem quoteItem) {
-    if (_quoteItems.containsKey(quoteItem.id)) {
+    if (_quoteItems.containsKey(quoteItem.productReference.id)) {
       _quoteItems.update(
-        quoteItem.id,
+        quoteItem.productReference.id,
         (value) => value.copyWith(
           quantity: value.quantity + quoteItem.quantity,
         ),
       );
     } else {
-      _quoteItems.putIfAbsent(quoteItem.id, () => quoteItem);
+      _quoteItems.putIfAbsent(quoteItem.productReference.id, () => quoteItem);
     }
     notifyListeners();
   }

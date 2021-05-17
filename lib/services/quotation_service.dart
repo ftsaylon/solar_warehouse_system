@@ -39,4 +39,14 @@ class QuotationService {
     await newQuotation.set(requestBody);
     return newQuotation.get();
   }
+
+  Future<DocumentSnapshot> updateQuotation(Quotation quotation) async {
+    final newQuotation = _db.collection('quotations').doc(quotation.id);
+    var requestBody = quotation.toJson();
+
+    requestBody['date_updated'] = FieldValue.serverTimestamp();
+
+    await newQuotation.update(requestBody);
+    return newQuotation.get();
+  }
 }

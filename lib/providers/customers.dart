@@ -10,6 +10,10 @@ class Customers extends ChangeNotifier {
 
   List<Customer> get customers => [..._customers];
 
+  Customer findById(String id) {
+    return _customers.firstWhere((customer) => customer.id == id);
+  }
+
   Future<void> fetchAndSetCustomers() async {
     final newCustomers = (_customers.isEmpty)
         ? await _customerService.fetchCustomers()

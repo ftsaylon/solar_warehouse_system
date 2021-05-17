@@ -18,8 +18,13 @@ class Customer {
   });
 
   factory Customer.fromJson(Map<dynamic, dynamic> json) {
+    var id = '';
+
+    if (json['reference'] != null)
+      id = (json['reference'] as DocumentReference).id;
+
     return Customer(
-      id: json['id'] ?? '',
+      id: id,
       name: json['name'] ?? '',
       emailAddress: json['emailAddress'] ?? '',
       contactNumber: json['contactNumber'] ?? '',
@@ -52,7 +57,7 @@ class Customer {
       'emailAddress': this.emailAddress ?? '',
       'contactNumber': this.contactNumber ?? '',
       'address': this.address ?? '',
-      'reference': this.documentSnapshot?.reference ?? '',
+      'reference': this.documentSnapshot?.reference,
     };
   }
 

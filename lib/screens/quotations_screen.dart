@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_data_table.dart';
+import 'package:solar_warehouse_system/widgets/features/quotations/quotation_detail.dart';
 import 'package:solar_warehouse_system/widgets/features/quotations/quotation_form.dart';
 
 class QuotationsScreen extends StatefulWidget {
@@ -75,28 +76,61 @@ class _QuotationsScreenState extends State<QuotationsScreen> {
       DataColumn(
         label: Text('Total'),
       ),
+      DataColumn(
+        label: Text('Actions'),
+      ),
     ];
 
-    final rows = quotations
-        .map(
-          (quotation) => DataRow(
-            cells: [
-              DataCell(
-                Text(quotation.id),
-              ),
-              DataCell(
-                Text(quotation.title),
-              ),
-              DataCell(
-                Text(quotation.customer.name),
-              ),
-              DataCell(
-                Text(quotation.total.toStringAsFixed(2)),
-              ),
-            ],
+    final rows = quotations.map((quotation) {
+      return DataRow(
+        cells: [
+          DataCell(
+            Text(quotation.id),
           ),
-        )
-        .toList();
+          DataCell(
+            Text(quotation.title),
+          ),
+          DataCell(
+            Text(quotation.customer.name),
+          ),
+          DataCell(
+            Text(quotation.total.toStringAsFixed(2)),
+          ),
+          DataCell(
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () => showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) => QuotationForm(
+                      quotation: quotation,
+                      isEditing: true,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.copy),
+                  onPressed: () => showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) => QuotationForm(
+                      quotation: quotation,
+                      isDuplicating: true,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }).toList();
 
     return (_isLoading)
         ? Center(

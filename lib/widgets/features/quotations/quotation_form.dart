@@ -6,11 +6,19 @@ import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/providers/quote_items.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
-import 'package:solar_warehouse_system/widgets/features/quotations/quote_item_form.dart';
+import 'package:solar_warehouse_system/widgets/features/quotations/quote_items_table.dart';
 
 class QuotationForm extends StatefulWidget {
   final Quotation quotation;
-  QuotationForm({this.quotation, Key key}) : super(key: key);
+  final bool isDuplicating;
+  final bool isEditing;
+
+  QuotationForm({
+    this.quotation,
+    this.isEditing,
+    this.isDuplicating,
+    Key key,
+  }) : super(key: key);
 
   @override
   _QuotationFormState createState() => _QuotationFormState();
@@ -28,14 +36,15 @@ class _QuotationFormState extends State<QuotationForm> {
     'title': '',
   };
 
-  bool get isEditing => widget.quotation != null;
+  bool get isEditing => widget.isEditing ?? false;
+  bool get isDuplicating => widget.isDuplicating ?? false;
 
   @override
   void initState() {
     _isInit = true;
     _isLoading = false;
 
-    if (isEditing) {
+    if (isEditing || isDuplicating) {
       _editedQuotation = widget.quotation;
       _initValues = {
         'title': _editedQuotation.title,
@@ -53,7 +62,7 @@ class _QuotationFormState extends State<QuotationForm> {
 
       await context.read<Customers>().fetchAndSetCustomers();
 
-      if (isEditing) {
+      if (isEditing || isDuplicating) {
         context
             .read<QuoteItems>()
             .fetchAndSetQuoteItems(_editedQuotation.quoteItems);
@@ -77,12 +86,21 @@ class _QuotationFormState extends State<QuotationForm> {
     final isValid = _formKey.currentState.validate();
     if (!isValid) return;
     _formKey.currentState.save();
+
     final quoteItemsProvider = context.read<QuoteItems>();
+    final quotationsProvider = context.read<Quotations>();
+
     _editedQuotation = _editedQuotation.copyWith(
       quoteItems: quoteItemsProvider.quoteItems,
       total: quoteItemsProvider.total,
     );
-    await context.read<Quotations>().addQuotation(_editedQuotation);
+
+    if (isEditing) {
+      await quotationsProvider.updateQuotation(_editedQuotation);
+    } else {
+      await quotationsProvider.addQuotation(_editedQuotation);
+    }
+
     quoteItemsProvider.clear();
     Navigator.of(context).pop();
   }
@@ -119,10 +137,16 @@ class _QuotationFormState extends State<QuotationForm> {
   }
 
   Widget _buildSelectCustomer(BuildContext context) {
-    final customers = context.watch<Customers>().customers;
-    return DropdownButtonFormField(
+    var initCustomer;
+    final customersProvider = context.watch<Customers>();
+    final customers = customersProvider.customers;
+    if (isEditing || isDuplicating) {
+      initCustomer = customersProvider.findById(_editedQuotation.customer.id);
+    }
+    return DropdownButtonFormField<Customer>(
+      value: initCustomer ?? null,
       items: customers
-          .map<DropdownMenuItem>(
+          .map<DropdownMenuItem<Customer>>(
             (customer) => DropdownMenuItem<Customer>(
               value: customer,
               child: Text(customer.name),
@@ -138,70 +162,6 @@ class _QuotationFormState extends State<QuotationForm> {
 
   Widget _buildQuoteItems(BuildContext context) {
     final quoteItems = context.watch<QuoteItems>().quoteItems;
-    final columns = [
-      DataColumn(
-        label: Text('Name'),
-      ),
-      DataColumn(
-        label: Text('Quantity'),
-      ),
-      DataColumn(
-        label: Text('Rate'),
-      ),
-      DataColumn(
-        label: Text('Tax'),
-      ),
-      DataColumn(
-        label: Text('SubTotal'),
-      ),
-    ];
-    final rows = quoteItems.values
-        .map((quoteItem) => DataRow(cells: [
-              DataCell(
-                Text(quoteItem.name),
-              ),
-              DataCell(
-                Text(quoteItem.quantity.toString()),
-              ),
-              DataCell(
-                Text(quoteItem.rate.toStringAsFixed(2)),
-              ),
-              DataCell(
-                Text(quoteItem.tax.toStringAsFixed(2)),
-              ),
-              DataCell(
-                Text(quoteItem.subTotal.toStringAsFixed(2)),
-              ),
-            ]))
-        .toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text('Quote Items'),
-            ),
-            ElevatedButton(
-              onPressed: () => showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (context) => QuoteItemForm(),
-              ),
-              child: Text('Add Item'),
-            ),
-          ],
-        ),
-        DataTable(
-          headingTextStyle: Theme.of(context).textTheme.subtitle1,
-          headingRowColor: MaterialStateProperty.all(
-              Theme.of(context).primaryColor.withOpacity(0.08)),
-          columns: columns,
-          rows: rows,
-        ),
-      ],
-    );
+    return QuoteItemsTable(quoteItems: quoteItems);
   }
 }

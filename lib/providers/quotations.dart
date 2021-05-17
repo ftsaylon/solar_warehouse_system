@@ -37,4 +37,18 @@ class Quotations extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> updateQuotation(Quotation quotation) async {
+    final updatedQuotationDoc =
+        await _quotationsService.updateQuotation(quotation);
+    if (updatedQuotationDoc != null) {
+      quotation = quotation.copyWith(
+        documentSnapshot: updatedQuotationDoc,
+      );
+      final index =
+          _quotations.indexWhere((element) => element.id == quotation.id);
+      if (index >= 0) _quotations[index] = quotation;
+      notifyListeners();
+    }
+  }
 }

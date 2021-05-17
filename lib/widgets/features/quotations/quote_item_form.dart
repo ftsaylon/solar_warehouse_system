@@ -88,6 +88,7 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
       title: 'New Quote Item',
       saveForm: () => _saveForm(context),
       children: [
+        _buildSelectProduct(context),
         TextFormField(
           initialValue: _initValues['quantity'],
           decoration: InputDecoration(labelText: 'Quantity'),
@@ -160,7 +161,6 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
             );
           },
         ),
-        _buildSelectProduct(context),
       ],
     );
   }
@@ -169,16 +169,17 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
     final products = context.watch<Products>().products;
     return DropdownButtonFormField(
       items: products
-          .map<DropdownMenuItem>(
+          .map<DropdownMenuItem<Product>>(
             (product) => DropdownMenuItem<Product>(
               value: product,
               child: Text(product.name),
             ),
           )
           .toList(),
-      onChanged: (value) {
+      onChanged: (Product value) {
         _editedQuoteItem = _editedQuoteItem.copyWith(
           name: value.name,
+          rate: value.price,
           productReference: value.documentSnapshot.reference,
         );
       },
