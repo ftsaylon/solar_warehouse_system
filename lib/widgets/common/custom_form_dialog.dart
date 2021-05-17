@@ -45,6 +45,7 @@ class _CustomFormDialogState extends State<CustomFormDialog> {
         key: widget.formKey,
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: (_isLoading)
                 ? [
@@ -63,31 +64,43 @@ class _CustomFormDialogState extends State<CustomFormDialog> {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: ElevatedButton(
-              onPressed: _saveForm,
-              child: Text('Save'),
-            ),
-          ),
-        ),
-        SizedBox(width: 12),
-        Expanded(
-          child: Container(
+    return (widget.saveForm != null)
+        ? Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: ElevatedButton(
+                    onPressed: _saveForm,
+                    child: Text('Save'),
+                  ),
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Cancel'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).unselectedWidgetColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : Container(
+            width: double.infinity,
             padding: const EdgeInsets.only(top: 16.0),
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: Text('Close'),
               style: ElevatedButton.styleFrom(
                 primary: Theme.of(context).unselectedWidgetColor,
               ),
             ),
-          ),
-        ),
-      ],
-    );
+          );
   }
 }

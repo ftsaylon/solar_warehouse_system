@@ -162,6 +162,9 @@ class _QuotationFormState extends State<QuotationForm> {
 
   Widget _buildQuoteItems(BuildContext context) {
     final quoteItems = context.watch<QuoteItems>().quoteItems;
-    return QuoteItemsTable(quoteItems: quoteItems);
+    return QuoteItemsTable(
+      quoteItems: quoteItems,
+      isViewing: false,
+    );
   }
 }

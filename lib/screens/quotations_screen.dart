@@ -100,6 +100,16 @@ class _QuotationsScreenState extends State<QuotationsScreen> {
             Row(
               children: [
                 IconButton(
+                  icon: Icon(Icons.open_in_new),
+                  onPressed: () => showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) => QuotationDetail(
+                      quotation: quotation,
+                    ),
+                  ),
+                ),
+                IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () => showDialog(
                     barrierDismissible: false,

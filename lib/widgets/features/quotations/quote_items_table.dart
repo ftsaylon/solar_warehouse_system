@@ -5,8 +5,13 @@ import 'package:solar_warehouse_system/widgets/features/quotations/quote_item_fo
 
 class QuoteItemsTable extends StatelessWidget {
   final Map<String, QuoteItem> quoteItems;
+  final bool isViewing;
 
-  const QuoteItemsTable({this.quoteItems, Key key}) : super(key: key);
+  const QuoteItemsTable({
+    @required this.quoteItems,
+    @required this.isViewing,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,31 +55,32 @@ class QuoteItemsTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Text('Quote Items'),
-              ),
-              ElevatedButton(
-                onPressed: () => showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) => QuoteItemForm(),
+          if (!isViewing)
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text('Quote Items'),
                 ),
-                child: Text('Add Quote Item'),
-              ),
-              SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: () => showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) => ProductForm(),
+                ElevatedButton(
+                  onPressed: () => showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) => QuoteItemForm(),
+                  ),
+                  child: Text('Add Quote Item'),
                 ),
-                child: Text('Create New Product'),
-              ),
-            ],
-          ),
+                SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: () => showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) => ProductForm(),
+                  ),
+                  child: Text('Create New Product'),
+                ),
+              ],
+            ),
           DataTable(
             headingTextStyle: Theme.of(context).textTheme.subtitle1,
             headingRowColor: MaterialStateProperty.all(

@@ -17,7 +17,6 @@ class QuoteItemForm extends StatefulWidget {
 
 class _QuoteItemFormState extends State<QuoteItemForm> {
   final _formKey = GlobalKey<FormState>();
-  // final _nameFocusNode = FocusNode();
   final _quantityFocusNode = FocusNode();
   final _rateFocusNode = FocusNode();
   final _taxFocusNode = FocusNode();
@@ -83,86 +82,90 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomFormDialog(
-      formKey: _formKey,
-      title: 'New Quote Item',
-      saveForm: () => _saveForm(context),
-      children: [
-        _buildSelectProduct(context),
-        TextFormField(
-          initialValue: _initValues['quantity'],
-          decoration: InputDecoration(labelText: 'Quantity'),
-          textInputAction: TextInputAction.next,
-          onFieldSubmitted: (_) {
-            FocusScope.of(context).requestFocus(_rateFocusNode);
-          },
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Please enter a quantity.';
-            }
-            if (int.tryParse(value) == null) {
-              return 'Please enter a valid number.';
-            }
-            if (int.parse(value) <= 0) {
-              return 'Please enter a number greater than zero.';
-            }
-            return null;
-          },
-          onSaved: (value) {
-            _editedQuoteItem = _editedQuoteItem.copyWith(
-              quantity: int.parse(value),
-            );
-          },
-        ),
-        TextFormField(
-          initialValue: _initValues['rate'],
-          decoration: InputDecoration(labelText: 'Rate'),
-          textInputAction: TextInputAction.next,
-          onFieldSubmitted: (_) {
-            FocusScope.of(context).requestFocus(_taxFocusNode);
-          },
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Please enter a price.';
-            }
-            if (double.tryParse(value) == null) {
-              return 'Please enter a valid number.';
-            }
-            if (double.parse(value) <= 0) {
-              return 'Please enter a number greater than zero.';
-            }
-            return null;
-          },
-          onSaved: (value) {
-            _editedQuoteItem = _editedQuoteItem.copyWith(
-              rate: double.parse(value),
-            );
-          },
-        ),
-        TextFormField(
-          initialValue: _initValues['tax'],
-          decoration: InputDecoration(labelText: 'Tax'),
-          textInputAction: TextInputAction.next,
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Please enter a tax rate.';
-            }
-            if (double.tryParse(value) == null) {
-              return 'Please enter a valid number.';
-            }
-            if (double.parse(value) <= 0) {
-              return 'Please enter a number greater than zero.';
-            }
-            return null;
-          },
-          onSaved: (value) {
-            _editedQuoteItem = _editedQuoteItem.copyWith(
-              tax: double.parse(value),
-            );
-          },
-        ),
-      ],
-    );
+    return _isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : CustomFormDialog(
+            formKey: _formKey,
+            title: 'New Quote Item',
+            saveForm: () => _saveForm(context),
+            children: [
+              _buildSelectProduct(context),
+              TextFormField(
+                initialValue: _initValues['quantity'],
+                decoration: InputDecoration(labelText: 'Quantity'),
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_rateFocusNode);
+                },
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a quantity.';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Please enter a valid number.';
+                  }
+                  if (int.parse(value) <= 0) {
+                    return 'Please enter a number greater than zero.';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _editedQuoteItem = _editedQuoteItem.copyWith(
+                    quantity: int.parse(value),
+                  );
+                },
+              ),
+              TextFormField(
+                initialValue: _initValues['rate'],
+                decoration: InputDecoration(labelText: 'Rate'),
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_taxFocusNode);
+                },
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a price.';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter a valid number.';
+                  }
+                  if (double.parse(value) <= 0) {
+                    return 'Please enter a number greater than zero.';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _editedQuoteItem = _editedQuoteItem.copyWith(
+                    rate: double.parse(value),
+                  );
+                },
+              ),
+              TextFormField(
+                initialValue: _initValues['tax'],
+                decoration: InputDecoration(labelText: 'Tax (%)'),
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a tax rate.';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter a valid number.';
+                  }
+                  if (double.parse(value) <= 0) {
+                    return 'Please enter a number greater than zero.';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _editedQuoteItem = _editedQuoteItem.copyWith(
+                    tax: double.parse(value),
+                  );
+                },
+              ),
+            ],
+          );
   }
 
   Widget _buildSelectProduct(BuildContext context) {
@@ -179,7 +182,6 @@ class _QuoteItemFormState extends State<QuoteItemForm> {
       onChanged: (Product value) {
         _editedQuoteItem = _editedQuoteItem.copyWith(
           name: value.name,
-          rate: value.price,
           productReference: value.documentSnapshot.reference,
         );
       },

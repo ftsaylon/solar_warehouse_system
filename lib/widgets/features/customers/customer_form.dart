@@ -71,6 +71,7 @@ class _CustomerFormState extends State<CustomerForm> {
       saveForm: () => _saveForm(context),
       children: [
         TextFormField(
+          focusNode: _nameFocusNode,
           initialValue: _initValues['name'],
           decoration: InputDecoration(labelText: 'Customer Name'),
           textInputAction: TextInputAction.next,
@@ -88,6 +89,7 @@ class _CustomerFormState extends State<CustomerForm> {
           },
         ),
         TextFormField(
+          focusNode: _emailFocusNode,
           initialValue: _initValues['email'],
           decoration: InputDecoration(labelText: 'Email Address'),
           textInputAction: TextInputAction.next,
@@ -105,6 +107,7 @@ class _CustomerFormState extends State<CustomerForm> {
           },
         ),
         TextFormField(
+          focusNode: _contactFocusNode,
           initialValue: _initValues['contact'],
           decoration: InputDecoration(labelText: 'Contact Number'),
           textInputAction: TextInputAction.next,
@@ -122,6 +125,7 @@ class _CustomerFormState extends State<CustomerForm> {
           },
         ),
         TextFormField(
+          focusNode: _addressFocusNode,
           initialValue: _initValues['address'],
           decoration: InputDecoration(labelText: 'Address'),
           textInputAction: TextInputAction.next,
