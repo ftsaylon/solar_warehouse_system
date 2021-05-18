@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_data_table.dart';
+import 'package:solar_warehouse_system/widgets/common/delete_dialog.dart';
 import 'package:solar_warehouse_system/widgets/features/quotations/quotation_detail.dart';
 import 'package:solar_warehouse_system/widgets/features/quotations/quotation_form.dart';
 
@@ -122,7 +123,20 @@ class _QuotationsScreenState extends State<QuotationsScreen> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () {},
+                  onPressed: () => showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) => ConfirmDialog(
+                      title:
+                          'Are you sure you want to delete ${quotation.title}?',
+                      confirm: () async {
+                        await context
+                            .read<Quotations>()
+                            .deleteQuotation(quotation);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.copy),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
-import 'package:solar_warehouse_system/models/quote_item.dart';
 import 'package:solar_warehouse_system/services/quotation_service.dart';
 
 class Quotations extends ChangeNotifier {
@@ -50,5 +49,11 @@ class Quotations extends ChangeNotifier {
       if (index >= 0) _quotations[index] = quotation;
       notifyListeners();
     }
+  }
+
+  Future<void> deleteQuotation(Quotation quotation) async {
+    await _quotationsService.deleteQuotation(quotation);
+    _quotations.removeWhere((element) => element.id == quotation.id);
+    notifyListeners();
   }
 }

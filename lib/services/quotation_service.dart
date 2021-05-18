@@ -49,4 +49,8 @@ class QuotationService {
     await newQuotation.update(requestBody);
     return newQuotation.get();
   }
+
+  Future<void> deleteQuotation(Quotation quotation) async {
+    await _db.collection('quotations').doc(quotation.id).delete();
+  }
 }
