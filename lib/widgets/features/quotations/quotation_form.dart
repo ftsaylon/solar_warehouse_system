@@ -6,6 +6,7 @@ import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/providers/quote_items.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
+import 'package:solar_warehouse_system/widgets/features/customers/customer_form.dart';
 import 'package:solar_warehouse_system/widgets/features/quotations/quote_items_table.dart';
 
 class QuotationForm extends StatefulWidget {
@@ -143,20 +144,36 @@ class _QuotationFormState extends State<QuotationForm> {
     if (isEditing || isDuplicating) {
       initCustomer = customersProvider.findById(_editedQuotation.customer.id);
     }
-    return DropdownButtonFormField<Customer>(
-      value: initCustomer ?? null,
-      items: customers
-          .map<DropdownMenuItem<Customer>>(
-            (customer) => DropdownMenuItem<Customer>(
-              value: customer,
-              child: Text(customer.name),
-            ),
-          )
-          .toList(),
-      onChanged: (value) {
-        _editedQuotation = _editedQuotation.copyWith(customer: value);
-      },
-      decoration: InputDecoration(labelText: 'Select Customer'),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: DropdownButtonFormField<Customer>(
+            value: initCustomer ?? null,
+            items: customers
+                .map<DropdownMenuItem<Customer>>(
+                  (customer) => DropdownMenuItem<Customer>(
+                    value: customer,
+                    child: Text(customer.name),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              _editedQuotation = _editedQuotation.copyWith(customer: value);
+            },
+            decoration: InputDecoration(labelText: 'Select Customer'),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () => showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => CustomerForm(),
+          ),
+          child: Text('Create New Customer'),
+        ),
+      ],
     );
   }
 
