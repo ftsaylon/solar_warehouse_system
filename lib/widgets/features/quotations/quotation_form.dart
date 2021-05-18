@@ -1,4 +1,9 @@
+import 'dart:html' as html;
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:solar_warehouse_system/helpers/image_util.dart';
 import 'package:solar_warehouse_system/models/customer.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/providers/customers.dart';
@@ -32,6 +37,8 @@ class _QuotationFormState extends State<QuotationForm> {
   bool _isInit;
   bool _isLoading;
 
+  List<Uint8List> pickedImages = [];
+
   var _editedQuotation = Quotation.initial();
   var _initValues = {
     'title': '',
@@ -47,6 +54,7 @@ class _QuotationFormState extends State<QuotationForm> {
 
     if (isEditing || isDuplicating) {
       _editedQuotation = widget.quotation;
+      print(_editedQuotation.images);
       _initValues = {
         'title': _editedQuotation.title,
       };
@@ -91,9 +99,13 @@ class _QuotationFormState extends State<QuotationForm> {
     final quoteItemsProvider = context.read<QuoteItems>();
     final quotationsProvider = context.read<Quotations>();
 
+    final imageUrls =
+        await quotationsProvider.uploadQuotationImages(pickedImages);
+
     _editedQuotation = _editedQuotation.copyWith(
       quoteItems: quoteItemsProvider.quoteItems,
       total: quoteItemsProvider.total,
+      images: imageUrls ?? [],
     );
 
     if (isEditing) {
@@ -133,8 +145,18 @@ class _QuotationFormState extends State<QuotationForm> {
               ),
               _buildSelectCustomer(context),
               _buildQuoteItems(context),
+              _buildImagePicker(),
+              ...pickedImages.map((image) => Image.memory(image, width: 500)),
+              ..._editedQuotation.images
+                  .map((e) => Image.network(e, width: 500)),
             ],
           );
+  }
+
+  Widget _buildImages() {
+    return Column(
+      children: [],
+    );
   }
 
   Widget _buildSelectCustomer(BuildContext context) {
@@ -182,6 +204,21 @@ class _QuotationFormState extends State<QuotationForm> {
     return QuoteItemsTable(
       quoteItems: quoteItems,
       isViewing: false,
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          final images = await pickImage(context);
+          setState(() {
+            pickedImages = images;
+          });
+        },
+        child: Text('Upload Images'),
+      ),
     );
   }
 }

@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/services/quotation_service.dart';
+import 'package:solar_warehouse_system/services/uploader_service.dart';
+import 'dart:io';
 
 class Quotations extends ChangeNotifier {
   final _quotationsService = GetIt.I<QuotationService>();
+  final _uploaderService = GetIt.I<UploaderService>();
 
   List<Quotation> _quotations = [];
 
@@ -55,5 +60,17 @@ class Quotations extends ChangeNotifier {
     await _quotationsService.deleteQuotation(quotation);
     _quotations.removeWhere((element) => element.id == quotation.id);
     notifyListeners();
+  }
+
+  Future<List<String>> uploadQuotationImages(
+    List<Uint8List> imagesToUpload,
+  ) async {
+    List<String> imageUrls = [];
+    for (var i = 0; i < imagesToUpload.length; i++) {
+      imageUrls.add(
+        await _uploaderService.uploadQuotationImage(imagesToUpload[i]),
+      );
+    }
+    return imageUrls;
   }
 }
