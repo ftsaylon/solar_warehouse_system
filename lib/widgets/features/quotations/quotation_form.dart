@@ -1,7 +1,3 @@
-import 'dart:html' as html;
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:solar_warehouse_system/helpers/image_util.dart';
 import 'package:solar_warehouse_system/models/customer.dart';
@@ -33,11 +29,10 @@ class QuotationForm extends StatefulWidget {
 class _QuotationFormState extends State<QuotationForm> {
   final _formKey = GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
+  final _scrollController = ScrollController();
 
   bool _isInit;
   bool _isLoading;
-
-  List<Uint8List> pickedImages = [];
 
   var _editedQuotation = Quotation.initial();
   var _initValues = {
@@ -54,7 +49,6 @@ class _QuotationFormState extends State<QuotationForm> {
 
     if (isEditing || isDuplicating) {
       _editedQuotation = widget.quotation;
-      print(_editedQuotation.images);
       _initValues = {
         'title': _editedQuotation.title,
       };
@@ -99,13 +93,9 @@ class _QuotationFormState extends State<QuotationForm> {
     final quoteItemsProvider = context.read<QuoteItems>();
     final quotationsProvider = context.read<Quotations>();
 
-    final imageUrls =
-        await quotationsProvider.uploadQuotationImages(pickedImages);
-
     _editedQuotation = _editedQuotation.copyWith(
       quoteItems: quoteItemsProvider.quoteItems,
       total: quoteItemsProvider.total,
-      images: imageUrls ?? [],
     );
 
     if (isEditing) {
@@ -146,16 +136,75 @@ class _QuotationFormState extends State<QuotationForm> {
               _buildSelectCustomer(context),
               _buildQuoteItems(context),
               _buildImagePicker(),
-              ...pickedImages.map((image) => Image.memory(image, width: 500)),
-              ..._editedQuotation.images
-                  .map((e) => Image.network(e, width: 500)),
+              _editedQuotation.images.isEmpty
+                  ? Center(child: Text('No images yet'))
+                  : _buildImages([
+                      ..._editedQuotation.images
+                          .map((image) => _buildImage(image)),
+                    ]),
             ],
           );
   }
 
-  Widget _buildImages() {
-    return Column(
-      children: [],
+  _buildImage(String imageUrl) {
+    return Card(
+      child: Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: 1,
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            right: 10,
+            top: 10,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _editedQuotation.images.remove(imageUrl);
+                });
+              },
+              child: ClipOval(
+                child: Container(
+                  width: 25,
+                  height: 25,
+                  color: Colors.black,
+                  child: Icon(
+                    Icons.clear,
+                    color: Colors.white,
+                    size: 15,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImages(List<Widget> images) {
+    return Container(
+      width: 600,
+      height: 300,
+      child: Scrollbar(
+        isAlwaysShown: true,
+        controller: _scrollController,
+        child: GridView.builder(
+          controller: _scrollController,
+          physics: const ClampingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+          ),
+          itemCount: images.length,
+          itemBuilder: (context, index) {
+            return images[index];
+          },
+        ),
+      ),
     );
   }
 
@@ -208,16 +257,57 @@ class _QuotationFormState extends State<QuotationForm> {
   }
 
   Widget _buildImagePicker() {
+    final imagePicker = _ImagePicker(
+      setQuoteImages: (List<String> imageUrls) {
+        setState(() {
+          _editedQuotation = _editedQuotation
+              .copyWith(images: [...imageUrls, ..._editedQuotation.images]);
+        });
+      },
+    );
+
+    return imagePicker;
+  }
+}
+
+class _ImagePicker extends StatefulWidget {
+  final Function setQuoteImages;
+
+  _ImagePicker({
+    Key key,
+    this.setQuoteImages,
+  }) : super(key: key);
+
+  @override
+  __ImagePickerState createState() => __ImagePickerState();
+}
+
+class __ImagePickerState extends State<_ImagePicker> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final quotationsProvider = context.read<Quotations>();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(
-        onPressed: () async {
-          final images = await pickImage(context);
-          setState(() {
-            pickedImages = images;
-          });
-        },
-        child: Text('Upload Images'),
+        onPressed: _isLoading
+            ? () {}
+            : () async {
+                final images = await pickImage(context);
+                setState(() {
+                  _isLoading = true;
+                });
+                final imageUrls =
+                    await quotationsProvider.uploadQuotationImages(images);
+                setState(() {
+                  _isLoading = false;
+                });
+                widget.setQuoteImages(imageUrls);
+              },
+        child: (!_isLoading)
+            ? Text('Upload Images')
+            : Text('Uploading images. Please wait...'),
       ),
     );
   }

@@ -3,15 +3,22 @@ import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
 import 'quote_items_table.dart';
 
-class QuotationDetail extends StatelessWidget {
+class QuotationDetail extends StatefulWidget {
   final Quotation quotation;
 
   const QuotationDetail({this.quotation, Key key}) : super(key: key);
 
   @override
+  _QuotationDetailState createState() => _QuotationDetailState();
+}
+
+class _QuotationDetailState extends State<QuotationDetail> {
+  final _scrollController = ScrollController();
+
+  @override
   Widget build(BuildContext context) {
     return CustomFormDialog(
-      title: 'Quote: ${quotation.title}',
+      title: 'Quote: ${widget.quotation.title}',
       children: [
         Row(
           children: [
@@ -48,15 +55,15 @@ class QuotationDetail extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${quotation.customer.name}'),
+                Text('${widget.quotation.customer.name}'),
                 SizedBox(height: 4),
-                Text('${quotation.customer.address}'),
+                Text('${widget.quotation.customer.address}'),
                 SizedBox(height: 4),
-                Text('${quotation.customer.contactNumber}'),
+                Text('${widget.quotation.customer.contactNumber}'),
                 SizedBox(height: 4),
-                Text('${quotation.customer.emailAddress}'),
+                Text('${widget.quotation.customer.emailAddress}'),
                 SizedBox(height: 4),
-                Text('PHP ${quotation.total}'),
+                Text('PHP ${widget.quotation.total}'),
                 SizedBox(height: 4),
               ],
             ),
@@ -64,14 +71,51 @@ class QuotationDetail extends StatelessWidget {
         ),
         SizedBox(height: 16),
         _buildQuoteItems(context),
+        _buildImages([
+          ...widget.quotation.images.map((image) => _buildImage(image)),
+        ]),
       ],
     );
   }
 
   Widget _buildQuoteItems(BuildContext context) {
     return QuoteItemsTable(
-      quoteItems: quotation.quoteItems,
+      quoteItems: widget.quotation.quoteItems,
       isViewing: true,
+    );
+  }
+
+  _buildImage(String imageUrl) {
+    return Card(
+        child: AspectRatio(
+      aspectRatio: 1,
+      child: Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+      ),
+    ));
+  }
+
+  Widget _buildImages(List<Widget> images) {
+    return Container(
+      width: 600,
+      height: 300,
+      child: Scrollbar(
+        isAlwaysShown: true,
+        controller: _scrollController,
+        child: GridView.builder(
+          controller: _scrollController,
+          physics: const ClampingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+          ),
+          itemCount: images.length,
+          itemBuilder: (context, index) {
+            return images[index];
+          },
+        ),
+      ),
     );
   }
 }
