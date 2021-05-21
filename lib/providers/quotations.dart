@@ -12,8 +12,19 @@ class Quotations extends ChangeNotifier {
   final _uploaderService = GetIt.I<UploaderService>();
 
   List<Quotation> _quotations = [];
-
   List<Quotation> get quotations => [..._quotations];
+  List<String> _imageUrls = [];
+  List<String> get imageUrls => _imageUrls;
+
+  void addImagesToEditedQuotation(List<String> newImageUrls) {
+    _imageUrls = [..._imageUrls, ...newImageUrls];
+    notifyListeners();
+  }
+
+  void removeImagesFromEditedQuotation(String imageUrl) {
+    _imageUrls.remove(imageUrl);
+    notifyListeners();
+  }
 
   Stream<List<Quotation>> quotationsStream() {
     return _quotationsService.streamQuotations();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:solar_warehouse_system/helpers/pdf_util.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
 import 'quote_items_table.dart';
@@ -14,67 +15,113 @@ class QuotationDetail extends StatefulWidget {
 
 class _QuotationDetailState extends State<QuotationDetail> {
   final _scrollController = ScrollController();
+  final _pdfUtil = PDFUtil();
+
+  bool _isLoading = false;
+
+  void _createPDF() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final pdf = await _pdfUtil.createQuotePDF(widget.quotation);
+    setState(() {
+      _isLoading = false;
+    });
+    _pdfUtil.openPDF(pdf);
+  }
+
+  void _downloadPDF() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final pdf = await _pdfUtil.createQuotePDF(widget.quotation);
+    _pdfUtil.downloadPDF(pdf);
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomFormDialog(
       title: 'Quote: ${widget.quotation.title}',
-      children: [
-        Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Customer:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Address:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Contact Number:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Email Address:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Total:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${widget.quotation.customer.name}'),
-                SizedBox(height: 4),
-                Text('${widget.quotation.customer.address}'),
-                SizedBox(height: 4),
-                Text('${widget.quotation.customer.contactNumber}'),
-                SizedBox(height: 4),
-                Text('${widget.quotation.customer.emailAddress}'),
-                SizedBox(height: 4),
-                Text('PHP ${widget.quotation.total}'),
-                SizedBox(height: 4),
-              ],
-            ),
-          ],
-        ),
-        SizedBox(height: 16),
-        _buildQuoteItems(context),
-        _buildImages([
-          ...widget.quotation.images.map((image) => _buildImage(image)),
-        ]),
-      ],
+      children: _isLoading
+          ? [
+              Center(
+                child: Text('Loading...'),
+              ),
+            ]
+          : [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Customer:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Address:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Contact Number:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Email Address:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Total:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${widget.quotation.customer.name}'),
+                      SizedBox(height: 4),
+                      Text('${widget.quotation.customer.address}'),
+                      SizedBox(height: 4),
+                      Text('${widget.quotation.customer.contactNumber}'),
+                      SizedBox(height: 4),
+                      Text('${widget.quotation.customer.emailAddress}'),
+                      SizedBox(height: 4),
+                      Text('PHP ${widget.quotation.total}'),
+                      SizedBox(height: 4),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: _createPDF,
+                        child: Text('Create PDF'),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: _downloadPDF,
+                        child: Text('Download PDF'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              _buildQuoteItems(context),
+              _buildImages([
+                ...widget.quotation.images.map((image) => _buildImage(image)),
+              ]),
+            ],
     );
   }
 
