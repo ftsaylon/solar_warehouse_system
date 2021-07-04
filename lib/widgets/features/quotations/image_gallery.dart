@@ -3,14 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:solar_warehouse_system/providers/quotations.dart';
 import 'package:solar_warehouse_system/helpers/image_util.dart';
 
-class ImagePicker extends StatefulWidget {
-  ImagePicker({Key key}) : super(key: key);
+class ImageGallery extends StatefulWidget {
+  ImageGallery({Key key}) : super(key: key);
 
   @override
-  _ImagePickerState createState() => _ImagePickerState();
+  _ImageGalleryState createState() => _ImageGalleryState();
 }
 
-class _ImagePickerState extends State<ImagePicker> {
+class _ImageGalleryState extends State<ImageGallery> {
   bool _isLoading = false;
 
   final _scrollController = ScrollController();
@@ -27,6 +27,7 @@ class _ImagePickerState extends State<ImagePicker> {
     final _imageUrls = quotationsProvider.imageUrls;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -51,7 +52,11 @@ class _ImagePickerState extends State<ImagePicker> {
           ),
         ),
         _imageUrls.isEmpty
-            ? Center(child: Text('No images yet'))
+            ? Center(
+                child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text('No images yet'),
+              ))
             : _buildImages([
                 ..._imageUrls.map((image) => _buildImage(context, image)),
               ]),
@@ -69,6 +74,7 @@ class _ImagePickerState extends State<ImagePicker> {
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
+              height: 200,
             ),
           ),
           Positioned(
@@ -101,21 +107,18 @@ class _ImagePickerState extends State<ImagePicker> {
     return Container(
       width: 600,
       height: 300,
-      child: Scrollbar(
-        isAlwaysShown: true,
+      child: GridView.builder(
         controller: _scrollController,
-        child: GridView.builder(
-          controller: _scrollController,
-          physics: const ClampingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-          ),
-          itemCount: images.length,
-          itemBuilder: (context, index) {
-            return images[index];
-          },
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
         ),
+        itemCount: images.length,
+        itemBuilder: (context, index) {
+          return images[index];
+        },
       ),
     );
   }

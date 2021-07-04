@@ -68,6 +68,9 @@ class _QuotationFormState extends State<QuotationForm> {
         context
             .read<QuoteItems>()
             .fetchAndSetQuoteItems(_editedQuotation.quoteItems);
+        context
+            .read<Quotations>()
+            .setImagesToEditedQuotation(_editedQuotation.images);
       }
 
       setState(() {
@@ -135,7 +138,7 @@ class _QuotationFormState extends State<QuotationForm> {
               ),
               _buildSelectCustomer(context),
               _buildQuoteItems(context),
-              ImagePicker(),
+              ImageGallery(),
             ],
           );
   }

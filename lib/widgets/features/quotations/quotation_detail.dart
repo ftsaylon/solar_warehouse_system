@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:solar_warehouse_system/helpers/currency_util.dart';
 import 'package:solar_warehouse_system/helpers/pdf_util.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/widgets/common/custom_form_dialog.dart';
@@ -27,7 +29,7 @@ class _QuotationDetailState extends State<QuotationDetail> {
     setState(() {
       _isLoading = false;
     });
-    _pdfUtil.openPDF(pdf);
+    await _pdfUtil.openPDF(pdf);
   }
 
   void _downloadPDF() async {
@@ -35,7 +37,7 @@ class _QuotationDetailState extends State<QuotationDetail> {
       _isLoading = true;
     });
     final pdf = await _pdfUtil.createQuotePDF(widget.quotation);
-    _pdfUtil.downloadPDF(pdf);
+    await _pdfUtil.downloadPDF(pdf);
     setState(() {
       _isLoading = false;
     });
@@ -83,6 +85,16 @@ class _QuotationDetailState extends State<QuotationDetail> {
                         'Total:',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Date Created:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Expiration Date:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                   SizedBox(width: 16),
@@ -97,7 +109,13 @@ class _QuotationDetailState extends State<QuotationDetail> {
                       SizedBox(height: 4),
                       Text('${widget.quotation.customer.emailAddress}'),
                       SizedBox(height: 4),
-                      Text('PHP ${widget.quotation.total}'),
+                      Text('PHP ${moneyFormat.format(widget.quotation.total)}'),
+                      SizedBox(height: 4),
+                      Text(
+                          '${DateFormat.yMd().format(widget.quotation.dateCreated)}'),
+                      SizedBox(height: 4),
+                      Text(
+                          '${DateFormat.yMd().format(widget.quotation.dateOfExpiration)}'),
                       SizedBox(height: 4),
                     ],
                   ),
@@ -144,25 +162,25 @@ class _QuotationDetailState extends State<QuotationDetail> {
   }
 
   Widget _buildImages(List<Widget> images) {
-    return Container(
-      width: 600,
-      height: 300,
-      child: Scrollbar(
-        isAlwaysShown: true,
-        controller: _scrollController,
-        child: GridView.builder(
-          controller: _scrollController,
-          physics: const ClampingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-          ),
-          itemCount: images.length,
-          itemBuilder: (context, index) {
-            return images[index];
-          },
-        ),
-      ),
-    );
+    return images.isNotEmpty
+        ? Container(
+            width: 600,
+            height: 300,
+            alignment: Alignment.center,
+            child: GridView.builder(
+              controller: _scrollController,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemCount: images.length,
+              itemBuilder: (context, index) {
+                return images[index];
+              },
+            ),
+          )
+        : Container();
   }
 }

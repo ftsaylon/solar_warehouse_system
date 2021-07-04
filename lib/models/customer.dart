@@ -61,7 +61,7 @@ class Customer {
       'emailAddress': this.emailAddress ?? '',
       'contactNumber': this.contactNumber ?? '',
       'address': this.address ?? '',
-      'reference': this.documentReference ?? '',
+      'reference': this.documentReference,
     };
   }
 

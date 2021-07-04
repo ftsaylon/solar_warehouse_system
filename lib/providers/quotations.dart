@@ -21,6 +21,11 @@ class Quotations extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setImagesToEditedQuotation(List<String> imageUrls) {
+    _imageUrls = imageUrls;
+    notifyListeners();
+  }
+
   void removeImagesFromEditedQuotation(String imageUrl) {
     _imageUrls.remove(imageUrl);
     notifyListeners();
@@ -44,11 +49,16 @@ class Quotations extends ChangeNotifier {
   Future<void> addQuotation(Quotation quotation) async {
     final newQuotationDoc = await _quotationsService.addQuotation(quotation);
     if (newQuotationDoc != null) {
+      final DateTime dateCreated =
+          newQuotationDoc.get('date_created')?.toDate();
       quotation = quotation.copyWith(
         id: newQuotationDoc.id,
         documentSnapshot: newQuotationDoc,
+        dateCreated: dateCreated,
+        dateOfExpiration: dateCreated.add(Duration(days: 30)),
       );
       _quotations.insert(0, quotation);
+      _imageUrls.clear();
       notifyListeners();
     }
   }
@@ -63,6 +73,7 @@ class Quotations extends ChangeNotifier {
       final index =
           _quotations.indexWhere((element) => element.id == quotation.id);
       if (index >= 0) _quotations[index] = quotation;
+      _imageUrls.clear();
       notifyListeners();
     }
   }

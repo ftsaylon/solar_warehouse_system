@@ -12,6 +12,8 @@ class Quotation extends ChangeNotifier {
   final Map<String, QuoteItem> quoteItems;
   final List<String> images;
   final DocumentSnapshot documentSnapshot;
+  final DateTime dateCreated;
+  final DateTime dateOfExpiration;
 
   Quotation({
     this.id,
@@ -20,16 +22,10 @@ class Quotation extends ChangeNotifier {
     this.total,
     this.quoteItems,
     this.images,
+    this.dateCreated,
+    this.dateOfExpiration,
     this.documentSnapshot,
   });
-
-  factory Quotation.fromJson(Map<dynamic, dynamic> json) => Quotation(
-        id: json['id'] ?? '',
-        title: json['title'] ?? '',
-        customer: Customer.fromJson(json['customer'] ?? {}),
-        total: json['total']?.toDouble() ?? 0.0,
-        images: json['images'] ?? <String>[],
-      );
 
   factory Quotation.fromSnapshot(DocumentSnapshot documentSnapshot) {
     final data = documentSnapshot.data();
@@ -43,6 +39,9 @@ class Quotation extends ChangeNotifier {
       total: data['total']?.toDouble() ?? 0.0,
       quoteItems: quoteItems,
       images: data['images']?.cast<String>() ?? <String>[],
+      dateCreated: data['date_created']?.toDate() ?? DateTime.now(),
+      dateOfExpiration: (data['date_created']?.toDate() ?? DateTime.now())
+          .add(Duration(days: 10)),
       documentSnapshot: documentSnapshot,
     );
   }
@@ -54,7 +53,7 @@ class Quotation extends ChangeNotifier {
     return {
       'title': this.title ?? '',
       'customer_id': this.customer.id ?? '',
-      'customer': this.customer.toJson() ?? Customer.initial().toJson(),
+      'customer': this.customer.toJson(),
       'total': this.total ?? 0.0,
       'quote_items': quoteItems ?? {},
       'images': this.images ?? [],
@@ -68,6 +67,8 @@ class Quotation extends ChangeNotifier {
     double total,
     Map<String, QuoteItem> quoteItems,
     List<String> images,
+    DateTime dateCreated,
+    DateTime dateOfExpiration,
     DocumentSnapshot documentSnapshot,
   }) =>
       Quotation(
@@ -77,6 +78,8 @@ class Quotation extends ChangeNotifier {
         total: total ?? this.total,
         quoteItems: quoteItems ?? this.quoteItems,
         images: images ?? this.images,
+        dateCreated: dateCreated ?? this.dateCreated,
+        dateOfExpiration: dateOfExpiration ?? this.dateOfExpiration,
         documentSnapshot: documentSnapshot ?? this.documentSnapshot,
       );
 
