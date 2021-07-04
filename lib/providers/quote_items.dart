@@ -25,6 +25,11 @@ class QuoteItems extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteQuoteItem(QuoteItem quoteItem) {
+    _quoteItems.remove(quoteItem.productReference.id);
+    notifyListeners();
+  }
+
   void clear() {
     _quoteItems = {};
     notifyListeners();

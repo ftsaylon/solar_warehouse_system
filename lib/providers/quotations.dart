@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:solar_warehouse_system/services/quotation_service.dart';
 import 'package:solar_warehouse_system/services/uploader_service.dart';
-import 'dart:io';
 
 class Quotations extends ChangeNotifier {
   final _quotationsService = GetIt.I<QuotationService>();

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:solar_warehouse_system/models/quote_item.dart';
+import 'package:solar_warehouse_system/providers/quote_items.dart';
+import 'package:solar_warehouse_system/widgets/common/delete_dialog.dart';
 import 'package:solar_warehouse_system/widgets/features/products/product_form.dart';
 import 'package:solar_warehouse_system/widgets/features/quotations/quote_item_form.dart';
+import 'package:provider/provider.dart';
 
 class QuoteItemsTable extends StatelessWidget {
   final Map<String, QuoteItem> quoteItems;
@@ -31,6 +34,10 @@ class QuoteItemsTable extends StatelessWidget {
       DataColumn(
         label: Text('SubTotal'),
       ),
+      if (!isViewing)
+        DataColumn(
+          label: Text('Actions'),
+        ),
     ];
     final rows = quoteItems.values
         .map((quoteItem) => DataRow(cells: [
@@ -49,6 +56,30 @@ class QuoteItemsTable extends StatelessWidget {
               DataCell(
                 Text(quoteItem.subTotal.toStringAsFixed(2)),
               ),
+              if (!isViewing)
+                DataCell(
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => ConfirmDialog(
+                            title:
+                                'Are you sure you want to delete ${quoteItem.name}?',
+                            confirm: () async {
+                              context
+                                  .read<QuoteItems>()
+                                  .deleteQuoteItem(quoteItem);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ]))
         .toList();
     return Container(
