@@ -32,6 +32,7 @@ class CustomerService {
 
     requestBody['date_created'] = FieldValue.serverTimestamp();
     requestBody['date_updated'] = FieldValue.serverTimestamp();
+    requestBody['reference'] = newCustomer;
 
     await newCustomer.set(requestBody);
     return newCustomer.get();

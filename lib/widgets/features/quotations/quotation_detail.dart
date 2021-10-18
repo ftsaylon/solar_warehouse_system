@@ -151,6 +151,7 @@ class _QuotationDetailState extends State<QuotationDetail> {
   }
 
   _buildImage(String imageUrl) {
+    print(imageUrl);
     return Card(
         child: AspectRatio(
       aspectRatio: 1,
@@ -162,6 +163,7 @@ class _QuotationDetailState extends State<QuotationDetail> {
   }
 
   Widget _buildImages(List<Widget> images) {
+    print(images);
     return images.isNotEmpty
         ? Container(
             width: 600,

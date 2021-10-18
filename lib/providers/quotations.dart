@@ -47,6 +47,7 @@ class Quotations extends ChangeNotifier {
 
   Future<void> addQuotation(Quotation quotation) async {
     final newQuotationDoc = await _quotationsService.addQuotation(quotation);
+
     if (newQuotationDoc != null) {
       final DateTime dateCreated =
           newQuotationDoc.get('date_created')?.toDate();
@@ -83,15 +84,15 @@ class Quotations extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<String>> uploadQuotationImages(
+  Future<void> uploadQuotationImages(
     List<Uint8List> imagesToUpload,
   ) async {
     List<String> imageUrls = [];
-    for (var i = 0; i < imagesToUpload.length; i++) {
+
+    for (var image in imagesToUpload) {
       imageUrls.add(
-        await _uploaderService.uploadQuotationImage(imagesToUpload[i]),
+        await _uploaderService.uploadQuotationImage(image),
       );
     }
-    return imageUrls;
   }
 }

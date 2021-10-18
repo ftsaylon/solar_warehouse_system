@@ -14,17 +14,19 @@ class Quotation extends ChangeNotifier {
   final DocumentSnapshot documentSnapshot;
   final DateTime dateCreated;
   final DateTime dateOfExpiration;
+  final bool isApproved;
 
   Quotation({
-    this.id,
-    this.title,
-    this.customer,
-    this.total,
-    this.quoteItems,
-    this.images,
-    this.dateCreated,
-    this.dateOfExpiration,
-    this.documentSnapshot,
+    @required this.id,
+    @required this.title,
+    @required this.customer,
+    @required this.total,
+    @required this.quoteItems,
+    @required this.images,
+    @required this.dateCreated,
+    @required this.dateOfExpiration,
+    @required this.documentSnapshot,
+    @required this.isApproved,
   });
 
   factory Quotation.fromSnapshot(DocumentSnapshot documentSnapshot) {
@@ -43,6 +45,7 @@ class Quotation extends ChangeNotifier {
       dateOfExpiration: (data['date_created']?.toDate() ?? DateTime.now())
           .add(Duration(days: 10)),
       documentSnapshot: documentSnapshot,
+      isApproved: data['is_approved'],
     );
   }
 
@@ -57,6 +60,7 @@ class Quotation extends ChangeNotifier {
       'total': this.total ?? 0.0,
       'quote_items': quoteItems ?? {},
       'images': this.images ?? [],
+      'is_approved': this.isApproved ?? false,
     };
   }
 
@@ -69,6 +73,7 @@ class Quotation extends ChangeNotifier {
     List<String> images,
     DateTime dateCreated,
     DateTime dateOfExpiration,
+    bool isApproved,
     DocumentSnapshot documentSnapshot,
   }) =>
       Quotation(
@@ -81,6 +86,7 @@ class Quotation extends ChangeNotifier {
         dateCreated: dateCreated ?? this.dateCreated,
         dateOfExpiration: dateOfExpiration ?? this.dateOfExpiration,
         documentSnapshot: documentSnapshot ?? this.documentSnapshot,
+        isApproved: isApproved ?? this.isApproved,
       );
 
   factory Quotation.initial() => Quotation(
@@ -90,5 +96,9 @@ class Quotation extends ChangeNotifier {
         total: 0.0,
         quoteItems: {},
         images: [],
+        documentSnapshot: null,
+        dateOfExpiration: null,
+        dateCreated: null,
+        isApproved: false,
       );
 }

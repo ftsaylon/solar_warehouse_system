@@ -1,8 +1,8 @@
 import 'dart:html' as html;
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:solar_warehouse_system/models/job_order.dart';
 import 'package:solar_warehouse_system/models/quotation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
@@ -12,6 +12,145 @@ class PDFUtil {
     final http.Response response = await http.get(Uri.parse(imageUrl));
     final data = response.bodyBytes;
     return data;
+  }
+
+  Future<pw.Document> createJobOrderPDF(JobOrder jobOrder) async {
+    final pdf = pw.Document();
+    final jobOrderItems = jobOrder.jobOrderItems;
+
+    final rows = jobOrderItems.values
+        .map(
+          (quoteItem) => pw.TableRow(
+            children: [
+              pw.Text(quoteItem.name),
+              pw.Text(quoteItem.quantity.toString()),
+            ],
+          ),
+        )
+        .toList();
+
+    List<Uint8List> imagesData = [];
+
+    for (var i = 0; i < jobOrder.images.length; i++) {
+      final newImageData = await createFile(jobOrder.images[i]);
+      imagesData.add(newImageData);
+    }
+
+    final images = imagesData.map((imageData) {
+      final _image = pw.MemoryImage(imageData);
+      return pw.Image(_image);
+    }).toList();
+
+    final ByteData logoData = await rootBundle.load('assets/Solar_Logo.png');
+    final Uint8List logoList = logoData.buffer.asUint8List();
+
+    final logo = pw.MemoryImage(logoList);
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return [
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              mainAxisAlignment: pw.MainAxisAlignment.start,
+              children: [
+                createHeader(logo),
+                pw.SizedBox(height: 8),
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      'JOB ORDER: ',
+                      style: pw.TextStyle(
+                        fontSize: 16,
+                        color: PdfColor.fromHex('#21A9E0'),
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
+                    pw.Text(
+                      jobOrder.title,
+                      style: pw.TextStyle(
+                        fontSize: 16,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 8),
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'Customer:',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.SizedBox(height: 2),
+                        pw.Text(
+                          'Address:',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.SizedBox(height: 2),
+                        pw.Text(
+                          'Contact Number:',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.SizedBox(height: 2),
+                        pw.Text(
+                          'Email Address:',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    pw.SizedBox(width: 16),
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text('${jobOrder.customer.name}'),
+                        pw.SizedBox(height: 2),
+                        pw.Text('${jobOrder.customer.address}'),
+                        pw.SizedBox(height: 2),
+                        pw.Text('${jobOrder.customer.contactNumber}'),
+                        pw.SizedBox(height: 2),
+                        pw.Text('${jobOrder.customer.emailAddress}'),
+                        pw.SizedBox(height: 2),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 16),
+                pw.Table(
+                  children: <pw.TableRow>[
+                    pw.TableRow(
+                      children: [
+                        pw.Text(
+                          'Item',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                        pw.Text(
+                          'Quantity',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ...rows
+                  ],
+                ),
+                ...images,
+              ],
+            ),
+          ];
+        },
+      ),
+    );
+
+    return pdf;
   }
 
   Future<pw.Document> createQuotePDF(Quotation quotation) async {

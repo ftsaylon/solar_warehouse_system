@@ -28,8 +28,8 @@ class Customer {
     return Customer(
       id: id,
       name: json['name'] ?? '',
-      emailAddress: json['emailAddress'] ?? '',
-      contactNumber: json['contactNumber'] ?? '',
+      emailAddress: json['email_address'] ?? '',
+      contactNumber: json['contact_number'] ?? '',
       address: json['address'] ?? '',
       documentReference: json['reference'],
     );
@@ -40,8 +40,8 @@ class Customer {
     return Customer(
       id: documentSnapshot.id,
       name: data['name'] ?? '',
-      emailAddress: data['emailAddress'] ?? '',
-      contactNumber: data['contactNumber'] ?? '',
+      emailAddress: data['email_address'] ?? '',
+      contactNumber: data['contact_number'] ?? '',
       address: data['address'] ?? '',
       documentSnapshot: documentSnapshot,
       documentReference: documentSnapshot.reference,
@@ -58,10 +58,10 @@ class Customer {
   Map<String, dynamic> toJson() {
     return {
       'name': this.name ?? '',
-      'emailAddress': this.emailAddress ?? '',
-      'contactNumber': this.contactNumber ?? '',
+      'email_address': this.emailAddress ?? '',
+      'contact_number': this.contactNumber ?? '',
       'address': this.address ?? '',
-      'reference': this.documentReference,
+      'reference': this.documentReference ?? this?.documentSnapshot?.reference,
     };
   }
 

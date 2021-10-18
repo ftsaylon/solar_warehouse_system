@@ -31,6 +31,7 @@ class Customers extends ChangeNotifier {
       customer = customer.copyWith(
         id: newCustomerDoc.id,
         documentSnapshot: newCustomerDoc,
+        documentReference: newCustomerDoc.reference,
       );
       _customers.insert(0, customer);
       notifyListeners();

@@ -39,12 +39,10 @@ class _ImageGalleryState extends State<ImageGallery> {
                     setState(() {
                       _isLoading = true;
                     });
-                    final imageUrls =
-                        await quotationsProvider.uploadQuotationImages(images);
+                    await quotationsProvider.uploadQuotationImages(images);
                     setState(() {
                       _isLoading = false;
                     });
-                    quotationsProvider.addImagesToEditedQuotation(imageUrls);
                   },
             child: (!_isLoading)
                 ? Text('Upload Images')

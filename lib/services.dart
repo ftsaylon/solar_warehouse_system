@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:solar_warehouse_system/services/customer_service.dart';
+import 'package:solar_warehouse_system/services/job_order_servicer.dart';
 import 'package:solar_warehouse_system/services/product_service.dart';
 import 'package:solar_warehouse_system/services/quotation_service.dart';
 import 'package:solar_warehouse_system/services/uploader_service.dart';
@@ -14,5 +15,6 @@ class Services {
     getIt.registerSingleton<ProductService>(ProductService());
     getIt.registerSingleton<CustomerService>(CustomerService());
     getIt.registerSingleton<UploaderService>(UploaderService());
+    getIt.registerSingleton<JobOrderService>(JobOrderService());
   }
 }

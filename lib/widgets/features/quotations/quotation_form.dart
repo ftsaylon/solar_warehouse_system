@@ -98,7 +98,7 @@ class _QuotationFormState extends State<QuotationForm> {
     _editedQuotation = _editedQuotation.copyWith(
       quoteItems: quoteItemsProvider.quoteItems,
       total: quoteItemsProvider.total,
-      images: quotationsProvider.imageUrls,
+      images: List<String>.from(quotationsProvider.imageUrls),
     );
 
     if (isEditing) {
