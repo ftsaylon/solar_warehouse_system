@@ -65,5 +65,6 @@ class QuoteItem {
       );
 
   double get subTotal =>
-      (this.quantity * this.rate) + ((this.quantity * this.rate) * this.tax);
+      (this.quantity * this.rate) +
+      ((this.quantity * this.rate) * (this.tax / 100));
 }

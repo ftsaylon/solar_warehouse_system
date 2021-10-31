@@ -42,10 +42,13 @@ class _CustomDataTableState extends State<CustomDataTable> {
               Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(24),
                     child: Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   ElevatedButton(

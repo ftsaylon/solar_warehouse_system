@@ -22,78 +22,66 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
-  List<Widget> _widgetOptions = <Widget>[
+  final _screens = <Widget>[
     DashboardScreen(),
     CustomersScreen(),
     ProductsScreen(),
     QuotationsScreen(),
   ];
 
-  int _selectedIndex;
-
-  @override
-  void initState() {
-    _selectedIndex = 0;
-    super.initState();
-  }
+  final _tabs = [
+    CustomTab(
+      icon: Icon(Icons.dashboard),
+      title: Text('Dashboard'),
+    ),
+    CustomTab(
+      icon: Icon(Icons.contacts),
+      title: Text('Customers'),
+    ),
+    CustomTab(
+      icon: Icon(Icons.inventory),
+      title: Text('Products'),
+    ),
+    CustomTab(
+      icon: Icon(Icons.assignment),
+      title: Text('Quotations'),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(),
-      body: Row(
-        children: [
-          LayoutBuilder(
-            builder: (context, constraint) {
-              return SingleChildScrollView(
-                child: Container(
-                  constraints: BoxConstraints(minHeight: constraint.maxHeight),
-                  child: IntrinsicHeight(
-                    child: _buildNavigationRail(),
-                  ),
-                ),
-              );
-            },
+    return DefaultTabController(
+      length: _screens.length,
+      child: Scaffold(
+        appBar: CustomAppBar(
+          bottom: TabBar(
+            labelPadding: EdgeInsets.all(16),
+            tabs: _tabs,
           ),
-          VerticalDivider(),
-          Expanded(
-            child: _widgetOptions[_selectedIndex],
-          ),
-        ],
+        ),
+        body: TabBarView(children: _screens),
       ),
     );
   }
+}
 
-  Widget _buildNavigationRail() {
-    return NavigationRail(
-      selectedIndex: _selectedIndex,
-      onDestinationSelected: (int index) {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      extended: true,
-      destinations: [
-        NavigationRailDestination(
-          icon: Icon(Icons.dashboard),
-          selectedIcon: Icon(Icons.dashboard),
-          label: Text('Dashboard'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.contacts),
-          selectedIcon: Icon(Icons.contacts),
-          label: Text('Customers'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.inventory),
-          selectedIcon: Icon(Icons.inventory),
-          label: Text('Products'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.assignment),
-          selectedIcon: Icon(Icons.assignment),
-          label: Text('Quotations'),
-        ),
+class CustomTab extends StatelessWidget {
+  final Text title;
+  final Icon icon;
+
+  const CustomTab({
+    this.title,
+    this.icon,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        icon,
+        SizedBox(width: 8),
+        title,
       ],
     );
   }
